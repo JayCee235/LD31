@@ -13,21 +13,21 @@ public class Main {
 	
 	public static void main(String[] args) {
 		JFrame frame = new JFrame(TITLE);
-		frame.setSize(new Dimension(WIDTH, HEIGHT));
-		
-		frame.setResizable(false);
-		frame.setLocationRelativeTo(null);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setPreferredSize(new Dimension(WIDTH, HEIGHT));
-		
+		frame.setSize(WIDTH, HEIGHT);
 		
 		Player player = new Player(WIDTH/2 + 8, HEIGHT/2 + 8, 16, 16, Color.red);
 		Game game = new Game(80, 60, player);
+	//	frame.setSize(new Dimension(WIDTH, HEIGHT));
+		frame.setMinimumSize(new Dimension(WIDTH, HEIGHT));
 		
 		frame.add(game);
 		frame.addKeyListener(player);
 		
+		//frame.setResizable(false);
+		frame.setLocationRelativeTo(null);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.pack();
+		
 		frame.setVisible(true);
 		
 		game.start();
