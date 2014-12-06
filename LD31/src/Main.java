@@ -17,6 +17,12 @@ public class Main {
 		frame.setResizable(false);
 		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		Game game = new Game(80, 60);
+		frame.add(game);
+		
 		frame.setVisible(true);
+		
+		game.start();
 	}
 }
