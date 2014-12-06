@@ -15,8 +15,9 @@ public class Main {
 		JFrame frame = new JFrame(TITLE);
 		frame.setSize(WIDTH, HEIGHT);
 		
-		Player player = new Player(WIDTH/2 + 8, HEIGHT/2 + 8, 16, 16, Color.red);
+		Player player = new Player(WIDTH/2 + 8, HEIGHT/2 + 8, 16, 16, Color.blue, null);
 		Game game = new Game(80, 60, player);
+		player.game = game;
 	//	frame.setSize(new Dimension(WIDTH, HEIGHT));
 		frame.setMinimumSize(new Dimension(WIDTH, HEIGHT));
 		
