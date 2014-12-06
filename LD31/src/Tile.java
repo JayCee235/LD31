@@ -1,12 +1,15 @@
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 
 
 public class Tile {
 	int x, y;
 	Color color;
 	boolean snow;
+	
+	BufferedImage[] sprite;
 	
 	int snowCount;
 	
@@ -17,6 +20,7 @@ public class Tile {
 		this.color = Color.white;
 		
 		this.snow = true;
+		this.sprite = Game.sprites.get("tile");
 		
 		this.snowCount = 10;
 	}
@@ -66,7 +70,12 @@ public class Tile {
 	public void draw(Graphics g, int x, int y, int w, int h) {
 		g.translate(x, y);
 		g.setColor(snow? Color.white.darker() : Color.black);
-		((Graphics2D) g).fillRect(0, 0, w, h);
+		BufferedImage img = sprite[snow?0:1];
+		if (img==null) {
+			((Graphics2D) g).fillRect(0, 0, w, h);
+		} else {
+			g.drawImage(img, 0, 0, w, h, 0, 0, img.getWidth(), img.getHeight(), null);
+		}
 		g.translate(-x, -y);
 	}
 }

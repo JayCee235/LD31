@@ -8,6 +8,8 @@ public class Turret extends Building{
 		super(x, y, w, h, color, game);
 		
 		this.cooldown = 0;
+		this.sprite = Game.sprites.get("turret");
+		
 	}
 	
 	@Override
@@ -41,10 +43,10 @@ public class Turret extends Building{
 			if (e instanceof Enemy && this.distanceFrom(e) < 100) {
 				if (this.cooldown <= 0 && this.snowCount >= 5) {
 					this.snowCount -= 5;
-					TurretBullet b = new TurretBullet(this.x, this.y, 4, 4,
+					TurretBullet b = new TurretBullet(this.x + this.width/2 - 4, this.y + this.height / 2 - 4, 8, 8,
 							Color.black, (Enemy) e, game);
 					game.add(b);
-					this.cooldown = 200;
+					this.cooldown = 100;
 				}
 			}
 		}

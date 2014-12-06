@@ -7,6 +7,9 @@ public class SnowWell extends Building{
 		super(x, y, w, h, color, game);
 		this.snowCount = 500;
 		this.cap = 1000;
+		
+		this.sprite = Game.sprites.get("well");
+		this.spriteIndex = 0;
 	}
 	
 	@Override
@@ -22,6 +25,11 @@ public class SnowWell extends Building{
 				}
 			}
 		}
+		this.spriteIndex = 0;
+		if(this.snowCount < 500)
+			this.spriteIndex = 1;
+		if(this.snowCount < 250)
+			this.spriteIndex = 2;
 	}
 
 }

@@ -18,7 +18,7 @@ public class Enemy extends Mob{
 
 	public Enemy(int x, int y, int w, int h, Color color, Game game) {
 		super(x, y, w, h, color);
-		this.moveSpeed = 3;
+		this.moveSpeed = 2;
 		this.game = game;
 		
 		this.loadSprites();
@@ -88,7 +88,7 @@ public class Enemy extends Mob{
 			}
 			
 			if(this.hunterMode) {
-				this.moveSpeed = 6;
+				this.moveSpeed = 4;
 				ddx = game.player.x - this.x;
 				ddy = game.player.y - this.y;
 				if (ddx != 0 || ddy != 0) {
@@ -98,7 +98,7 @@ public class Enemy extends Mob{
 				}
 				this.move(ddx, ddy);
 			} else {
-				this.moveSpeed = 3;
+				this.moveSpeed = 2;
 				ddx = 2 * Math.random() - 1;
 				ddy = 2 * Math.random() - 1;
 				if (ddx != 0 || ddy != 0) {
@@ -139,16 +139,24 @@ public class Enemy extends Mob{
 				ddx = -game.player.x + this.x;
 				ddy = -game.player.y + this.y;
 			} else {
-				ddx = this.target.x - this.x;
-				ddy = this.target.y - this.y;
+				if (!this.collidingWith(target)) {
+					ddx = this.target.x - this.x;
+					ddy = this.target.y - this.y;
+				} else {
+					ddx = 0;
+					ddy = 0;
+				}
 				
 			}
 			if (ddx != 0 || ddy != 0) {
 				double r = Math.sqrt(ddx * ddx + ddy * ddy);
 				ddx /= r;
 				ddy /= r;
+				this.move(ddx, ddy);
+			} else{
+				this.stop();
 			}
-			this.move(ddx, ddy);
+			
 			break;
 			
 			

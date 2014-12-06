@@ -1,3 +1,4 @@
+import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -48,10 +49,21 @@ public class Game extends JComponent implements Runnable{
 		BufferedImage[] playerDown = new BufferedImage[4];
 		BufferedImage[] playerLeft = new BufferedImage[4];
 		BufferedImage[] playerRight = new BufferedImage[4];
+		
 		BufferedImage[] enemyUp = new BufferedImage[4];
 		BufferedImage[] enemyDown = new BufferedImage[4];
 		BufferedImage[] enemyLeft = new BufferedImage[4];
 		BufferedImage[] enemyRight = new BufferedImage[4];
+		
+		BufferedImage[] snowImg = new BufferedImage[3];
+		
+		BufferedImage[] wellImg = new BufferedImage[3];
+		BufferedImage[] wallImg = new BufferedImage[1];
+		BufferedImage[] turretImg = new BufferedImage[1];
+		BufferedImage[] snowball = new BufferedImage[1];
+		
+		BufferedImage[] tileImg = new BufferedImage[2];
+		
 		
 		try {
 			String path = "res/LD31/";
@@ -81,6 +93,31 @@ public class Game extends JComponent implements Runnable{
 				enemyRight[i] = ImageIO.read(new File(path+enemyPath+d+app));
 				
 			}
+			String snowPath = "Entity/SnowPile";
+			String wallPath = "Entity/Wall";
+			String wellPath = "Entity/Well";
+			String turretPath = "Entity/Turret";
+			
+			String app = ".png";
+			
+			for(int i = 0; i < 3; i++) {
+				snowImg[i] = ImageIO.read(new File(path + snowPath + (i+1) + app));
+			}
+			for(int i = 0; i < 3; i++) {
+				wellImg[i] = ImageIO.read(new File(path + wellPath + (i+1) + app));
+			}
+			for(int i = 0; i < 1; i++) {
+				wallImg[i] = ImageIO.read(new File(path + wallPath + app));
+			}
+			for(int i = 0; i < 1; i++) {
+				turretImg[i] = ImageIO.read(new File(path + turretPath + app));
+			}
+			
+			tileImg[0] = ImageIO.read(new File(path + "Tile/Snow.png"));
+			tileImg[1] = ImageIO.read(new File(path + "Tile/Burn.png"));
+			
+			snowball[0] = ImageIO.read(new File(path + "Entity/Snowball.png"));
+			
 			sprites.put("playerUp", playerUp);
 			sprites.put("playerDown", playerDown);
 			sprites.put("playerLeft", playerLeft);
@@ -90,6 +127,14 @@ public class Game extends JComponent implements Runnable{
 			sprites.put("enemyDown", enemyDown);
 			sprites.put("enemyLeft", enemyLeft);
 			sprites.put("enemyRight", enemyRight);
+			
+			sprites.put("snowPile", snowImg);
+			sprites.put("wall", wallImg);
+			sprites.put("well", wellImg);
+			sprites.put("turret", turretImg);
+			sprites.put("snowball", snowball);
+			
+			sprites.put("tile", tileImg);
 			
 			
 		} catch (IOException e) {
@@ -138,6 +183,7 @@ public class Game extends JComponent implements Runnable{
 	
 	public void start() {
 		this.running = true;
+		this.blizzard = true;
 		Thread t = new Thread(this);
 		this.startTime = System.currentTimeMillis();
 		
@@ -180,24 +226,49 @@ public class Game extends JComponent implements Runnable{
 		if(this.snowCooldown < 0 && this.blizzard) {
 			entities.add(new Snowpile(Game.randInt(Main.WIDTH-16), Game.randInt(Main.HEIGHT-16), 
 					16, 16, Color.white, this));
-			this.snowCooldown = 400 + dcooldown++;
+			if(dcooldown < 100) {
+				entities.add(new Snowpile(Game.randInt(Main.WIDTH-16), Game.randInt(Main.HEIGHT-16), 
+						16, 16, Color.white, this));
+			}
+			this.snowCooldown = 400 + dcooldown;
+			dcooldown += 25;
 		}
 		
 		this.enemyCooldown--;
 		if(this.enemyCooldown < 0 && !this.blizzard) {
 			entities.add(new Enemy(Game.randInt(Main.WIDTH-16), Game.randInt(Main.HEIGHT-16), 
 					16, 16, Color.red, this));
+			if(dcooldown > 200) {
+				entities.add(new Enemy(Game.randInt(Main.WIDTH-16), Game.randInt(Main.HEIGHT-16), 
+						16, 16, Color.red, this));
+			}
+			if(dcooldown > 350) {
+				entities.add(new Enemy(Game.randInt(Main.WIDTH-16), Game.randInt(Main.HEIGHT-16), 
+						16, 16, Color.red, this));
+			}
 			
-			this.enemyCooldown = 400 - dcooldown++;
+			this.enemyCooldown = 400 - dcooldown;
+			dcooldown += 25;
 		}
 		
-		if(dcooldown > 200) {
-			dcooldown = 50;
+		if(dcooldown > 400) {
+			dcooldown = 0;
 		}
-		
 		
 		for(Entity m : entities) {
 			m.tick();
+		}
+		
+		while(toAdd.size()>0) {
+			Entity m = toAdd.get(0);
+			entities.add(m);
+			toAdd.remove(m);
+		}
+		
+		while(toRemove.size()>0) {
+			Entity m = toRemove.get(0);
+			entities.remove(m);
+			toRemove.remove(m);
 		}
 	}
 	
@@ -222,19 +293,25 @@ public class Game extends JComponent implements Runnable{
 			}
 		}
 		for(Entity m : entities) {
-			m.draw(g);
+			if (m!=this.player) {
+				m.draw(g);
+			}
 		}
-		while(toAdd.size()>0) {
-			Entity m = toAdd.get(0);
-			entities.add(m);
-			toAdd.remove(m);
-		}
+		this.player.draw(g);
 		
-		while(toRemove.size()>0) {
-			Entity m = toRemove.get(0);
-			entities.remove(m);
-			toRemove.remove(m);
-		}
+		//Moved to tick()
+		
+//		while(toAdd.size()>0) {
+//			Entity m = toAdd.get(0);
+//			entities.add(m);
+//			toAdd.remove(m);
+//		}
+//		
+//		while(toRemove.size()>0) {
+//			Entity m = toRemove.get(0);
+//			entities.remove(m);
+//			toRemove.remove(m);
+//		}
 		
 		
 	}

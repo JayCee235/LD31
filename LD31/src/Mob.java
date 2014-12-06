@@ -17,7 +17,7 @@ public class Mob extends Entity {
 	public Mob(int x, int y, int w, int h, Color color) {
 		super(x, y, w, h, color);
 		
-		this.moveSpeed = 4;
+		this.moveSpeed = 2;
 		
 		this.up = new BufferedImage[4];
 		this.down = new BufferedImage[4];
@@ -68,8 +68,11 @@ public class Mob extends Entity {
 					this.sprite = dy > 0?this.down:this.up;
 				}
 				
-				this.x += this.dx;
-				this.y += this.dy;
+				double ddx = dx==0?0:(dx>0? Math.ceil(dx):Math.floor(dx));
+				double ddy = dy==0?0:(dy>0? Math.ceil(dy):Math.floor(dy));
+				
+				this.x += ddx;
+				this.y += ddy;
 
 				if (this.x < 0)
 					this.x = 0;
@@ -108,7 +111,6 @@ public class Mob extends Entity {
 		
 		
 		g2.translate(-this.x*sc, -this.y*sc);
-		
 		
 	}
 	

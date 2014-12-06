@@ -9,6 +9,8 @@ public class Wall extends Building{
 		this.snowCount = 1000;
 		this.cap = 1000;
 		
+		this.sprite = Game.sprites.get("wall");
+		
 	}
 	
 	@Override
@@ -19,15 +21,9 @@ public class Wall extends Building{
 				if (e instanceof Enemy) {
 					((Enemy) e).stop();
 					((Enemy) e).freeze();
-					double ddx = e.x - this.x;
-					double ddy = e.y - this.y;
-					if (ddx != 0 || ddy != 0) {
-						double r = Math.sqrt(ddx * ddx + ddy * ddy);
-						ddx /= r;
-						ddy /= r;
-					}
-					((Enemy) e).move(ddx, ddy);
-					break;
+				}
+				if(e instanceof Snowpile) {
+					game.remove(e);
 				}
 			}
 		}

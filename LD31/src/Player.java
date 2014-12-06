@@ -16,18 +16,17 @@ public class Player extends Mob implements KeyListener{
 	int switchCooldown;
 	int fadeTime;
 	
+	int goal;
+	
 	Game game;
 	
 	int buildType;
 
 	public Player(int x, int y, int w, int h, Color color, Game game) {
 		super(x, y, w, h, color);
-		this.moveSpeed = 5;
+		this.moveSpeed = 3;
 		
-		this.up = Game.sprites.get("playerUp");
-		this.down = Game.sprites.get("playerDown");
-		this.left = Game.sprites.get("playerLeft");
-		this.right = Game.sprites.get("playerRight");
+		this.goal = 15000;
 		
 		this.keysDown = new boolean[65535];
 		
@@ -44,6 +43,8 @@ public class Player extends Mob implements KeyListener{
 		this.down = Game.sprites.get("playerDown");
 		this.left = Game.sprites.get("playerLeft");
 		this.right = Game.sprites.get("playerRight");
+		
+		this.sprite = this.down;
 	}
 
 	@Override
@@ -59,9 +60,12 @@ public class Player extends Mob implements KeyListener{
 			if (this.switchCooldown <= 0) {
 				this.buildType = (this.buildType + 1) % 3;
 				this.switchCooldown = 5;
-				this.fadeTime = 10;
+				this.fadeTime = 25;
 			}
 			
+		}
+		if(code == KeyEvent.VK_SPACE) {
+			System.out.println(game.dcooldown);
 		}
 	}
 
@@ -82,7 +86,7 @@ public class Player extends Mob implements KeyListener{
 	public void tick() {
 		if(this.snowCount <= 0) {
 			game.lose();
-		} else if(this.snowCount >= 10000) {
+		} else if(this.snowCount >= goal) {
 			game.win();
 		}
 		
@@ -168,27 +172,28 @@ public class Player extends Mob implements KeyListener{
 			switch(this.buildType) {
 			case 0:
 				Turret draw = new Turret(this.x, this.y - 20, 16, 16, Color.green, game);
-				draw.fade(g, fadeTime / 10.0f);
+				draw.fade(g, fadeTime / 25.0f);
 				break;
 			case 1:
 				SnowWell draww = new SnowWell(this.x, this.y - 20, 16, 16, Color.blue, game);
-				draww.fade(g, fadeTime / 10.0f);
+				draww.fade(g, fadeTime / 25.0f);
 				break;
 			case 2:
 				Wall drawww = new Wall(this.x - 8, this.y - 36, 32, 32, Color.yellow, game);
-				drawww.fade(g, fadeTime / 10.0f);
+				drawww.fade(g, fadeTime / 25.0f);
 				break;
 			default:
 			}
 		}
 		
 		this.displaySnow(g);
+		this.displayCooldown(g);
 		
 	}
 	
 	public void displaySnow(Graphics g) {
 		int sc = Main.SCALE;
-		double frac = ((double) this.snowCount) / 10000.0;
+		double frac = ((double) this.snowCount) / goal;
 		
 		Rectangle2D.Double full = new Rectangle2D.Double((Main.WIDTH / 2 - 125) * sc, 10*sc, 250*sc, 16*sc);
 		Rectangle2D.Double part = new Rectangle2D.Double((Main.WIDTH / 2 - 125) * sc, 10*sc, 250*sc * frac, 16*sc);
@@ -200,6 +205,23 @@ public class Player extends Mob implements KeyListener{
 		g2.setColor(new Color(0.0f, 0.0f, 0.0f, alpha));
 		g2.fill(full);
 		g2.setColor(new Color(0.0f, 0.5f, 1.0f, alpha));
+		g2.fill(part);
+	}
+	
+	public void displayCooldown(Graphics g) {
+		int sc = Main.SCALE;
+		double frac = ((double) this.turretCooldown) / 200.0;
+		
+		Rectangle2D.Double full = new Rectangle2D.Double((Main.WIDTH / 2 - 125) * sc, 28*sc, 250*sc, 4*sc);
+		Rectangle2D.Double part = new Rectangle2D.Double((Main.WIDTH / 2 - 125) * sc, 28*sc, 250*sc * frac, 4*sc);
+		
+		Graphics2D g2 = (Graphics2D) g;
+		
+		float alpha = this.y < 60?0.3f: 1.0f;
+		
+		g2.setColor(new Color(0.0f, 0.0f, 0.0f, alpha));
+		g2.fill(full);
+		g2.setColor(new Color(1.0f, 0.0f, 0.9f, alpha));
 		g2.fill(part);
 	}
 }
