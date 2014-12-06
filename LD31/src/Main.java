@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.awt.Dimension;
 
 import javax.swing.JFrame;
@@ -17,10 +18,16 @@ public class Main {
 		frame.setResizable(false);
 		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setPreferredSize(new Dimension(WIDTH, HEIGHT));
 		
-		Game game = new Game(80, 60);
+		
+		Player player = new Player(WIDTH/2 + 8, HEIGHT/2 + 8, 16, 16, Color.red);
+		Game game = new Game(80, 60, player);
+		
 		frame.add(game);
+		frame.addKeyListener(player);
 		
+		frame.pack();
 		frame.setVisible(true);
 		
 		game.start();
