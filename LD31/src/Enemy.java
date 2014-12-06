@@ -21,11 +21,9 @@ public class Enemy extends Mob{
 		this.moveSpeed = 3;
 		this.game = game;
 		
-		
+		this.loadSprites();
 		
 		this.behaviour = EnemyType.random();
-		
-		this.behaviour = EnemyType.siege;
 		
 		this.hunterMode = false;
 		this.cooldown = 0;
@@ -64,6 +62,13 @@ public class Enemy extends Mob{
 			
 		}
 		
+	}
+	
+	public void loadSprites() {
+		this.up = Game.sprites.get("enemyUp");
+		this.down = Game.sprites.get("enemyDown");
+		this.left = Game.sprites.get("enemyLeft");
+		this.right = Game.sprites.get("enemyRight");
 	}
 	
 	@Override
@@ -182,7 +187,9 @@ public class Enemy extends Mob{
 		Tile[][] foot = this.getFoot(game.board, game.tileX, game.tileY);
 		for(Tile[] ta : foot) {
 			for(Tile t : ta) {
-				t.burn(1);
+				if (t!=null) {
+					t.burn(1);
+				}
 			}
 		}
 		
@@ -197,7 +204,6 @@ public class Enemy extends Mob{
 				}
 			} else {
 				game.player.snowCount--;
-				System.out.println("Taking damage! " + game.player.snowCount);
 			}
 		}
 		
@@ -209,9 +215,13 @@ public class Enemy extends Mob{
 	}
 	
 	public void displayHealth(Graphics g) {
+		int sc = Main.SCALE;
+		
 		double frac = ((double) this.hp) / ((double) this.hpMax);
-		Rectangle2D.Double hpBar = new Rectangle2D.Double(this.x - 1, this.y - 3, this.width + 1, 2);
-		Rectangle2D.Double fill = new Rectangle2D.Double(this.x - 1, this.y - 3, (this.width + 1) * frac, 2);
+		Rectangle2D.Double hpBar = new Rectangle2D.Double((this.x - 1) * sc, (this.y - 3) * sc, 
+				(this.width + 1) * sc, 2 * sc);
+		Rectangle2D.Double fill = new Rectangle2D.Double((this.x - 1) * sc, 
+				(this.y - 3) * sc, (this.width + 1) * sc * frac, 2 * sc);
 		Graphics2D g2 = (Graphics2D) g;
 		g2.setColor(Color.black);
 		g2.fill(hpBar);

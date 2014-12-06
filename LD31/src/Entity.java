@@ -1,11 +1,14 @@
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 
 
 public class Entity {
 	int x, y, width, height;
 	Color color;
+	BufferedImage[] sprite;
+	double spriteIndex;
 	
 	public Entity(int x, int y, int w, int h, Color color) {
 		this.x = x;
@@ -13,17 +16,21 @@ public class Entity {
 		this.width = w;
 		this.height = h;
 		this.color = color;
+		
+		this.sprite = new BufferedImage[4];
+		this.spriteIndex = 0;
 	}
 	
 	public void draw(Graphics g) {
-		g.translate(x, y);
+		g.translate(x * Main.SCALE, y * Main.SCALE);
 		g.setColor(this.color);
-		((Graphics2D) g).fillRect(0, 0, width, height);
-		g.translate(-x, -y);
+		((Graphics2D) g).fillRect(0, 0, width * Main.SCALE, height * Main.SCALE);
+		g.translate(-x * Main.SCALE, -y * Main.SCALE);
 	}
 	
 	public void fade(Graphics g, float f) {
-		g.translate(x, y);
+		int sc = Main.SCALE;
+		g.translate(x*sc, y*sc);
 		float[] col = new float[4];
 		this.color.getRGBColorComponents(col);
 		col[3] = f;
@@ -31,8 +38,8 @@ public class Entity {
 		Color draw = new Color(col[0], col[1], col[2], col[3]);
 		
 		g.setColor(draw);
-		((Graphics2D) g).fillRect(0, 0, width, height);
-		g.translate(-x, -y);
+		((Graphics2D) g).fillRect(0, 0, width*sc, height*sc);
+		g.translate(-x*sc, -y*sc);
 	}
 
 	public void tick() {

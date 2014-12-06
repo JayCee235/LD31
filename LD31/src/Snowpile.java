@@ -36,7 +36,6 @@ public class Snowpile extends Entity{
 		if(this.collidingWith(this.player)) {
 			player.snowCount++;
 			this.snowCount--;
-			System.out.println("Collecting snow..." + player.snowCount);
 		}
 		
 		for(Entity e : game.entities) {
@@ -49,7 +48,7 @@ public class Snowpile extends Entity{
 		
 		for(Tile[] ta : this.getFoot(game.board, game.tileX, game.tileY)) {
 			for(Tile t : ta) {
-				if (!t.snow) {
+				if (t!=null && !t.snow) {
 					t.fill(10);
 					this.snowCount -= 10;
 				}

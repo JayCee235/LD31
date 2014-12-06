@@ -1,4 +1,7 @@
 import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.geom.Rectangle2D;
 
 
 public class Building extends Entity{
@@ -42,6 +45,27 @@ public class Building extends Entity{
 
 	public void die() {
 		game.remove(this);
+	}
+	
+	public void displayHealth(Graphics g) {
+		int sc = Main.SCALE;
+		
+		double frac = ((double) this.snowCount) / ((double) this.cap);
+		Rectangle2D.Double hpBar = new Rectangle2D.Double((this.x - 1) * sc, (this.y - 3) * sc, 
+				(this.width + 1) * sc, 2 * sc);
+		Rectangle2D.Double fill = new Rectangle2D.Double((this.x - 1) * sc, (this.y - 3) * sc,
+				(this.width + 1) * sc * frac, 2 * sc);
+		Graphics2D g2 = (Graphics2D) g;
+		g2.setColor(Color.black);
+		g2.fill(hpBar);
+		g2.setColor(Color.green);
+		g2.fill(fill);
+	}
+	
+	@Override
+	public void draw(Graphics g) {
+		super.draw(g);
+		this.displayHealth(g);
 	}
 
 }

@@ -24,14 +24,26 @@ public class Player extends Mob implements KeyListener{
 		super(x, y, w, h, color);
 		this.moveSpeed = 5;
 		
+		this.up = Game.sprites.get("playerUp");
+		this.down = Game.sprites.get("playerDown");
+		this.left = Game.sprites.get("playerLeft");
+		this.right = Game.sprites.get("playerRight");
+		
 		this.keysDown = new boolean[65535];
 		
-		this.snowCount = 500;
+		this.snowCount = 3000;
 		
 		this.turretCooldown = 0;
 		this.buildType = 0;
 		
 		this.game = game;
+	}
+	
+	public void loadSprites() {
+		this.up = Game.sprites.get("playerUp");
+		this.down = Game.sprites.get("playerDown");
+		this.left = Game.sprites.get("playerLeft");
+		this.right = Game.sprites.get("playerRight");
 	}
 
 	@Override
@@ -137,7 +149,7 @@ public class Player extends Mob implements KeyListener{
 		
 		for(Tile[] ta : this.getFoot(game.board, game.tileX, game.tileY)) {
 			for(Tile t : ta) {
-				if(!t.snow) {
+				if(t!=null && !t.snow) {
 					t.fill(1);
 					this.snowCount--;
 				}
@@ -175,10 +187,11 @@ public class Player extends Mob implements KeyListener{
 	}
 	
 	public void displaySnow(Graphics g) {
+		int sc = Main.SCALE;
 		double frac = ((double) this.snowCount) / 10000.0;
 		
-		Rectangle2D.Double full = new Rectangle2D.Double(Main.WIDTH / 2 - 250, 10, 500, 16);
-		Rectangle2D.Double part = new Rectangle2D.Double(Main.WIDTH / 2 - 250, 10, 500 * frac, 16);
+		Rectangle2D.Double full = new Rectangle2D.Double((Main.WIDTH / 2 - 125) * sc, 10*sc, 250*sc, 16*sc);
+		Rectangle2D.Double part = new Rectangle2D.Double((Main.WIDTH / 2 - 125) * sc, 10*sc, 250*sc * frac, 16*sc);
 		
 		Graphics2D g2 = (Graphics2D) g;
 		

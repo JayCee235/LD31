@@ -16,7 +16,6 @@ public class Wall extends Building{
 		super.tick();
 		for(Entity e : game.entities) {
 			if (this.collidingWith(e)) {
-				System.out.println("Bump");
 				if (e instanceof Enemy) {
 					((Enemy) e).stop();
 					((Enemy) e).freeze();

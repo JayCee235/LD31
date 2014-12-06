@@ -1,8 +1,13 @@
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
+import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 
 
@@ -11,6 +16,8 @@ public class Game extends JComponent implements Runnable{
 	public static final int WIDTH = Main.HEIGHT;
 	
 	long startTime;
+	
+	public static HashMap<String, BufferedImage[]> sprites = new HashMap<String, BufferedImage[]>();
 	
 	
 	Tile[][] board;
@@ -36,6 +43,59 @@ public class Game extends JComponent implements Runnable{
 	public Game(int x, int y, Player player) {
 		this.startTime = 0;
 		
+		//Sprite loading
+		BufferedImage[] playerUp = new BufferedImage[4];
+		BufferedImage[] playerDown = new BufferedImage[4];
+		BufferedImage[] playerLeft = new BufferedImage[4];
+		BufferedImage[] playerRight = new BufferedImage[4];
+		BufferedImage[] enemyUp = new BufferedImage[4];
+		BufferedImage[] enemyDown = new BufferedImage[4];
+		BufferedImage[] enemyLeft = new BufferedImage[4];
+		BufferedImage[] enemyRight = new BufferedImage[4];
+		
+		try {
+			String path = "res/LD31/";
+			String playerPath = "Player/Player_";
+			String enemyPath = "Enemy/Enemy_";
+			
+			String w = "Up";
+			String a = "Left";
+			String s = "Down";
+			String d = "Right";
+			
+			for(int i = 0; i < 4; i++) {
+				int ind = 1;
+				if(i == 1)
+					ind++;
+				if(i == 3)
+					ind = i;
+				String app = "" + ind + ".png";
+				playerUp[i] = ImageIO.read(new File(path+playerPath+w+app));
+				playerDown[i] = ImageIO.read(new File(path+playerPath+s+app));
+				playerLeft[i] = ImageIO.read(new File(path+playerPath+a+app));
+				playerRight[i] = ImageIO.read(new File(path+playerPath+d+app));
+				
+				enemyUp[i] = ImageIO.read(new File(path+enemyPath+w+app));
+				enemyDown[i] = ImageIO.read(new File(path+enemyPath+s+app));
+				enemyLeft[i] = ImageIO.read(new File(path+enemyPath+a+app));
+				enemyRight[i] = ImageIO.read(new File(path+enemyPath+d+app));
+				
+			}
+			sprites.put("playerUp", playerUp);
+			sprites.put("playerDown", playerDown);
+			sprites.put("playerLeft", playerLeft);
+			sprites.put("playerRight", playerRight);
+			
+			sprites.put("enemyUp", enemyUp);
+			sprites.put("enemyDown", enemyDown);
+			sprites.put("enemyLeft", enemyLeft);
+			sprites.put("enemyRight", enemyRight);
+			
+			
+		} catch (IOException e) {
+			System.out.println("Failed to load sprites!");
+		}
+		
 		this.board = new Tile[x][y];
 		this.x = x;
 		this.y = y;
@@ -49,7 +109,9 @@ public class Game extends JComponent implements Runnable{
 		this.toRemove = new ArrayList<Entity>();
 		this.toAdd = new ArrayList<Entity>();
 		this.entities = new ArrayList<Entity>();
-		entities.add(player);
+		if (player!=null) {
+			entities.add(player);
+		}
 		this.player = player;
 		
 		this.enemyCooldown = 0;
@@ -103,7 +165,7 @@ public class Game extends JComponent implements Runnable{
 	public void tick() {
 		this.blizzard = blizzard?(Math.random()<0.999):(Math.random()<0.0002);	
 		if(blizzard) {
-			System.out.println("It's snowing very hard");
+			//TODO: Blizzard particles.
 			for(int i = 0; i < board.length; i++) {
 				for(int j = 0; j < board[i].length; j++) {
 					board[i][j].fill(1);
@@ -150,11 +212,12 @@ public class Game extends JComponent implements Runnable{
 	@Override
 	public void paintComponent(Graphics g) {
 		g.setColor(this.background);
-		((Graphics2D) g).fillRect(0, 0, Main.WIDTH, Main.HEIGHT);
+		((Graphics2D) g).fillRect(0, 0, Main.WIDTH * Main.SCALE, Main.HEIGHT * Main.SCALE);
 		for(int i = 0; i < x; i++) {
 			for(int j = 0; j < y; j++) {
 				if (board[i][j]!=null) {
-					board[i][j].draw(g, i * tileX, j * tileY, tileX, tileY);
+					board[i][j].draw(g, i * tileX * Main.SCALE, j * tileY * Main.SCALE, 
+							tileX * Main.SCALE, tileY * Main.SCALE);
 				}
 			}
 		}

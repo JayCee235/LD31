@@ -1,5 +1,7 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 
@@ -9,11 +11,32 @@ public class Mob extends Entity {
 	double dx, dy;
 	
 	boolean frozen;
+	
+	BufferedImage[] up, down, left, right;
 
 	public Mob(int x, int y, int w, int h, Color color) {
 		super(x, y, w, h, color);
 		
 		this.moveSpeed = 4;
+		
+		this.up = new BufferedImage[4];
+		this.down = new BufferedImage[4];
+		this.left = new BufferedImage[4];
+		this.right = new BufferedImage[4];
+		
+	}
+	
+	public Mob (int x, int y, int w, int h, Color color, 
+			BufferedImage[] up, BufferedImage[] down, BufferedImage[] left, BufferedImage[] right) {
+		super(x, y, w, h, color);
+		
+		this.moveSpeed = 4;
+		
+		this.up = up;
+		this.down = down;
+		this.left = left;
+		this.right = right;
+		
 		
 	}
 	
@@ -39,6 +62,12 @@ public class Mob extends Entity {
 		
 		if (!frozen) {
 			if (this.moving) {
+				if(dx*dx > dy*dy) {
+					this.sprite = dx > 0?this.right:this.left;
+				} else {
+					this.sprite = dy > 0?this.down:this.up;
+				}
+				
 				this.x += this.dx;
 				this.y += this.dy;
 
@@ -60,6 +89,27 @@ public class Mob extends Entity {
 	
 	public void freeze() {
 		this.frozen = true;
+	}
+	
+	@Override
+	public void draw(Graphics g) {
+		Graphics2D g2 = (Graphics2D) g;
+		int sc = Main.SCALE;
+		
+		g2.translate(this.x*sc, this.y*sc);
+		this.spriteIndex = this.spriteIndex + 0.1;
+		if(this.spriteIndex >= this.sprite.length) {
+			this.spriteIndex = 0;
+		}
+		BufferedImage img = this.sprite[(int) this.spriteIndex];
+		if(img != null) {
+			g2.drawImage(img, 0, 0, this.width*sc, this.height*sc, 0, 0, img.getWidth(), img.getHeight(), null);
+		}
+		
+		
+		g2.translate(-this.x*sc, -this.y*sc);
+		
+		
 	}
 	
 	
