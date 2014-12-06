@@ -1,11 +1,14 @@
 import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 
 
 public class Enemy extends Mob{
 	Game game;
 	
-	int hp;
+	int hp, hpMax;
 	
 	EnemyType behaviour;
 	
@@ -18,9 +21,11 @@ public class Enemy extends Mob{
 		this.moveSpeed = 3;
 		this.game = game;
 		
-		this.hp = 100;
+		
 		
 		this.behaviour = EnemyType.random();
+		
+		this.behaviour = EnemyType.siege;
 		
 		this.hunterMode = false;
 		this.cooldown = 0;
@@ -29,6 +34,7 @@ public class Enemy extends Mob{
 		
 		switch(behaviour){
 		case siege:
+			this.hp = this.hpMax = 100;
 			ArrayList<Entity> p = game.entities;
 			Entity poten = null;
 			int dis = -1;
@@ -49,9 +55,12 @@ public class Enemy extends Mob{
 			break;
 			
 		case hunter:
+			this.hp = this.hpMax = 50;
+			break;
 		case circler:
 		case chaser:
 		default:
+			this.hp = this.hpMax = 100;
 			
 		}
 		
@@ -170,7 +179,12 @@ public class Enemy extends Mob{
 			break;
 		}
 		
-		
+		Tile[][] foot = this.getFoot(game.board, game.tileX, game.tileY);
+		for(Tile[] ta : foot) {
+			for(Tile t : ta) {
+				t.burn(1);
+			}
+		}
 		
 		super.tick();
 		
@@ -178,7 +192,7 @@ public class Enemy extends Mob{
 			if(this.behaviour == EnemyType.hunter) {
 				if(this.hunterMode) {
 					this.hunterMode = false;
-					game.player.snowCount -= 10;
+					game.player.snowCount -= 30;
 					this.cooldown = 100;
 				}
 			} else {
@@ -191,6 +205,24 @@ public class Enemy extends Mob{
 
 	public void die() {
 		game.remove(this);
+		game.player.snowCount += 100;
+	}
+	
+	public void displayHealth(Graphics g) {
+		double frac = ((double) this.hp) / ((double) this.hpMax);
+		Rectangle2D.Double hpBar = new Rectangle2D.Double(this.x - 1, this.y - 3, this.width + 1, 2);
+		Rectangle2D.Double fill = new Rectangle2D.Double(this.x - 1, this.y - 3, (this.width + 1) * frac, 2);
+		Graphics2D g2 = (Graphics2D) g;
+		g2.setColor(Color.black);
+		g2.fill(hpBar);
+		g2.setColor(color.red);
+		g2.fill(fill);
+	}
+	
+	@Override
+	public void draw(Graphics g) {
+		super.draw(g);
+		this.displayHealth(g);
 	}
 
 }

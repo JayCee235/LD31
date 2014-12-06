@@ -10,6 +10,8 @@ public class Game extends JComponent implements Runnable{
 	public static final int HEIGHT = Main.WIDTH;
 	public static final int WIDTH = Main.HEIGHT;
 	
+	long startTime;
+	
 	
 	Tile[][] board;
 	int x, y;
@@ -32,6 +34,8 @@ public class Game extends JComponent implements Runnable{
 	int snowCooldown;
 	
 	public Game(int x, int y, Player player) {
+		this.startTime = 0;
+		
 		this.board = new Tile[x][y];
 		this.x = x;
 		this.y = y;
@@ -73,6 +77,8 @@ public class Game extends JComponent implements Runnable{
 	public void start() {
 		this.running = true;
 		Thread t = new Thread(this);
+		this.startTime = System.currentTimeMillis();
+		
 		t.start();
 	}
 	
@@ -95,9 +101,15 @@ public class Game extends JComponent implements Runnable{
 	}
 	
 	public void tick() {
-		this.blizzard = blizzard?(Math.random()<0.99):(Math.random()<0.01);	
+		this.blizzard = blizzard?(Math.random()<0.999):(Math.random()<0.0002);	
 		if(blizzard) {
 			System.out.println("It's snowing very hard");
+			for(int i = 0; i < board.length; i++) {
+				for(int j = 0; j < board[i].length; j++) {
+					board[i][j].fill(1);
+				}
+			}
+			
 		} else {
 			
 		}
@@ -165,6 +177,7 @@ public class Game extends JComponent implements Runnable{
 	}
 	
 	public void lose() {
+		System.out.printf("You lost! You lasted %d seconds\n", (System.currentTimeMillis() - startTime) / 1000);
 		System.exit(0);
 	}
 	
@@ -176,5 +189,20 @@ public class Game extends JComponent implements Runnable{
 		this.paused = !paused;
 	}
 	
+	public static Tile getAt(Tile[][] board, int x, int y, int tileSizeX, int tileSizeY) {
+		int ix = x / tileSizeX;
+		int iy = y / tileSizeY;
+		
+		if(ix >= 0 && ix < board.length && iy >= 0 && iy < board[ix].length) {
+			return board[ix][iy];
+		} else {
+			return null;
+		}
+	}
+
+	public void win() {
+		System.out.printf("You win! You won in %d seconds.\n", (System.currentTimeMillis() - startTime) / 1000);
+		System.exit(0);
+	}
 
 }

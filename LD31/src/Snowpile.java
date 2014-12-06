@@ -24,6 +24,10 @@ public class Snowpile extends Entity{
 	
 	@Override
 	public void tick() {
+		if(this.snowCount < 0) {
+			game.remove(this);
+		}
+		
 		if(game.blizzard) {
 			this.snowCount++;
 		}
@@ -33,11 +37,25 @@ public class Snowpile extends Entity{
 			player.snowCount++;
 			this.snowCount--;
 			System.out.println("Collecting snow..." + player.snowCount);
-			
-			if(this.snowCount < 0) {
-				game.remove(this);
+		}
+		
+		for(Entity e : game.entities) {
+			if (this.collidingWith(e)) {
+				if (e instanceof Enemy) {
+					this.snowCount--;
+				}
 			}
 		}
+		
+		for(Tile[] ta : this.getFoot(game.board, game.tileX, game.tileY)) {
+			for(Tile t : ta) {
+				if (!t.snow) {
+					t.fill(10);
+					this.snowCount -= 10;
+				}
+			}
+		}
+		
 	}
 
 }

@@ -1,14 +1,20 @@
 import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.geom.Rectangle2D;
 
 
 public class Player extends Mob implements KeyListener{
 	boolean[] keysDown;
 	int snowCount;
 	int turretCooldown;
+	
+	int switchCooldown;
+	int fadeTime;
 	
 	Game game;
 	
@@ -38,10 +44,12 @@ public class Player extends Mob implements KeyListener{
 			game.pause();
 		}
 		if(code == KeyEvent.VK_X) {
-			this.buildType++;
-			if(this.buildType>2) {
-				this.buildType = 0;
+			if (this.switchCooldown <= 0) {
+				this.buildType = (this.buildType + 1) % 3;
+				this.switchCooldown = 5;
+				this.fadeTime = 10;
 			}
+			
 		}
 	}
 
@@ -55,7 +63,6 @@ public class Player extends Mob implements KeyListener{
 
 	@Override
 	public void keyTyped(KeyEvent arg0) {
-		// TODO Auto-generated method stub
 		
 	}
 	
@@ -63,6 +70,8 @@ public class Player extends Mob implements KeyListener{
 	public void tick() {
 		if(this.snowCount <= 0) {
 			game.lose();
+		} else if(this.snowCount >= 10000) {
+			game.win();
 		}
 		
 		this.stop();
@@ -118,6 +127,66 @@ public class Player extends Mob implements KeyListener{
 			this.turretCooldown--;
 		}
 		
+		if(this.switchCooldown > 0) {
+			this.switchCooldown--;
+		}
+		
+		if(this.fadeTime > 0) {
+			this.fadeTime--;
+		}
+		
+		for(Tile[] ta : this.getFoot(game.board, game.tileX, game.tileY)) {
+			for(Tile t : ta) {
+				if(!t.snow) {
+					t.fill(1);
+					this.snowCount--;
+				}
+			}
+		}
+		
+		
+		
 		super.tick();
+	}
+	
+	@Override
+	public void draw(Graphics g) {
+		super.draw(g);
+		if(this.fadeTime > 0) {
+			switch(this.buildType) {
+			case 0:
+				Turret draw = new Turret(this.x, this.y - 20, 16, 16, Color.green, game);
+				draw.fade(g, fadeTime / 10.0f);
+				break;
+			case 1:
+				SnowWell draww = new SnowWell(this.x, this.y - 20, 16, 16, Color.blue, game);
+				draww.fade(g, fadeTime / 10.0f);
+				break;
+			case 2:
+				Wall drawww = new Wall(this.x - 8, this.y - 36, 32, 32, Color.yellow, game);
+				drawww.fade(g, fadeTime / 10.0f);
+				break;
+			default:
+			}
+		}
+		
+		this.displaySnow(g);
+		
+	}
+	
+	public void displaySnow(Graphics g) {
+		double frac = ((double) this.snowCount) / 10000.0;
+		
+		Rectangle2D.Double full = new Rectangle2D.Double(Main.WIDTH / 2 - 250, 10, 500, 16);
+		Rectangle2D.Double part = new Rectangle2D.Double(Main.WIDTH / 2 - 250, 10, 500 * frac, 16);
+		
+		Graphics2D g2 = (Graphics2D) g;
+		
+		float alpha = this.y < 50?0.3f: 1.0f;
+		
+		g2.setColor(new Color(0.0f, 0.0f, 0.0f, alpha));
+		g2.fill(full);
+		g2.setColor(new Color(0.0f, 0.5f, 1.0f, alpha));
+		g2.fill(part);
 	}
 }

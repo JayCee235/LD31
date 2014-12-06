@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Graphics;
 import java.util.ArrayList;
 
 
@@ -60,5 +61,7 @@ public class Mob extends Entity {
 	public void freeze() {
 		this.frozen = true;
 	}
+	
+	
 
 }
