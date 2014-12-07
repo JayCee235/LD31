@@ -1,6 +1,8 @@
 package game;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -15,7 +17,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 public class SoundUtil {
 	private static Mixer mixer;
-	public static HashMap<String, File> clips = new HashMap<String, File>();
+	public static HashMap<String, URL> clips = new HashMap<String, URL>();
 	public static HashMap<String, Clip> clean = new HashMap<String, Clip>();
 	
 	public static boolean loaded = false;
@@ -40,7 +42,7 @@ public class SoundUtil {
 	
 	private static void loadSound(String name, String path) {
 		String prePath = "res/LD31/Sound/";
-		File file = new File(prePath + path);
+		URL file = SoundUtil.class.getResource(prePath + path);
 		
 		clips.put(name, file);
 		

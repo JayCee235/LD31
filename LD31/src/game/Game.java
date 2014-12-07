@@ -99,29 +99,23 @@ public class Game extends JComponent implements Runnable{
 					if (i == 3)
 						ind = i;
 					String app = "" + ind + ".png";
-					URL load = Game.class.getResource(path + playerPath + w
-							+ app);
 					
-					//System.out.println(load);
-					
-					//player.up[i] = ImageIO.read(load);
-					
-					playerUp[i] = ImageIO.read(new File(path + playerPath + w
+					playerUp[i] = ImageIO.read(this.getClass().getResource(path + playerPath + w
 							+ app));
-					playerDown[i] = ImageIO.read(new File(path + playerPath + s
+					playerDown[i] = ImageIO.read(this.getClass().getResource(path + playerPath + s
 							+ app));
-					playerLeft[i] = ImageIO.read(new File(path + playerPath + a
+					playerLeft[i] = ImageIO.read(this.getClass().getResource(path + playerPath + a
 							+ app));
-					playerRight[i] = ImageIO.read(new File(path + playerPath
+					playerRight[i] = ImageIO.read(this.getClass().getResource(path + playerPath
 							+ d + app));
 
-					enemyUp[i] = ImageIO.read(new File(path + enemyPath + w
+					enemyUp[i] = ImageIO.read(this.getClass().getResource(path + enemyPath + w
 							+ app));
-					enemyDown[i] = ImageIO.read(new File(path + enemyPath + s
+					enemyDown[i] = ImageIO.read(this.getClass().getResource(path + enemyPath + s
 							+ app));
-					enemyLeft[i] = ImageIO.read(new File(path + enemyPath + a
+					enemyLeft[i] = ImageIO.read(this.getClass().getResource(path + enemyPath + a
 							+ app));
-					enemyRight[i] = ImageIO.read(new File(path + enemyPath + d
+					enemyRight[i] = ImageIO.read(this.getClass().getResource(path + enemyPath + d
 							+ app));
 
 				}
@@ -133,36 +127,36 @@ public class Game extends JComponent implements Runnable{
 				String app = ".png";
 
 				for (int i = 0; i < 3; i++) {
-					snowImg[i] = ImageIO.read(new File(path + snowPath
+					snowImg[i] = ImageIO.read(this.getClass().getResource(path + snowPath
 							+ (i + 1) + app));
 				}
 				for (int i = 0; i < 3; i++) {
-					wellImg[i] = ImageIO.read(new File(path + wellPath
+					wellImg[i] = ImageIO.read(this.getClass().getResource(path + wellPath
 							+ (i + 1) + app));
 				}
 				for (int i = 0; i < 1; i++) {
-					wallImg[i] = ImageIO.read(new File(path + wallPath + app));
+					wallImg[i] = ImageIO.read(this.getClass().getResource(path + wallPath + app));
 				}
 				for (int i = 0; i < 1; i++) {
-					turretImg[i] = ImageIO.read(new File(path + turretPath
+					turretImg[i] = ImageIO.read(this.getClass().getResource(path + turretPath
 							+ app));
 				}
 
 				for (int i = 0; i < 4; i++) {
-					snowfall[i] = ImageIO.read(new File(path + "Tile/Snow"
+					snowfall[i] = ImageIO.read(this.getClass().getResource(path + "Tile/Snow"
 							+ (i + 1) + ".png"));
 				}
 
-				tileImg[0] = ImageIO.read(new File(path + "Tile/Snow.png"));
-				tileImg[1] = ImageIO.read(new File(path + "Tile/Burn.png"));
+				tileImg[0] = ImageIO.read(this.getClass().getResource(path + "Tile/Snow.png"));
+				tileImg[1] = ImageIO.read(this.getClass().getResource(path + "Tile/Burn.png"));
 
-				snowball[0] = ImageIO.read(new File(path
+				snowball[0] = ImageIO.read(this.getClass().getResource(path
 						+ "Entity/Snowball.png"));
 				
-				bars[0] = ImageIO.read(new File(path + "SnowBar.png"));
-				bars[1] = ImageIO.read(new File(path + "XPBar.png"));
-				bars[2] = ImageIO.read(new File(path + "HPBar.png"));
-				bars[3] = ImageIO.read(new File(path + "HPBarBig.png"));
+				bars[0] = ImageIO.read(this.getClass().getResource(path + "SnowBar.png"));
+				bars[1] = ImageIO.read(this.getClass().getResource(path + "XPBar.png"));
+				bars[2] = ImageIO.read(this.getClass().getResource(path + "HPBar.png"));
+				bars[3] = ImageIO.read(this.getClass().getResource(path + "HPBarBig.png"));
 
 				sprites.put("playerUp", playerUp);
 				sprites.put("playerDown", playerDown);
@@ -185,14 +179,14 @@ public class Game extends JComponent implements Runnable{
 				sprites.put("blizzard", snowfall);
 				sprites.put("bars", bars);
 
-				Game.pauseOverlay = ImageIO.read(new File(path
+				Game.pauseOverlay = ImageIO.read(this.getClass().getResource(path
 						+ "PauseScreen.png"));
 				Game.winOverlay = ImageIO
-						.read(new File(path + "WinScreen.png"));
-				Game.loseOverlay = ImageIO.read(new File(path
+						.read(this.getClass().getResource(path + "WinScreen.png"));
+				Game.loseOverlay = ImageIO.read(this.getClass().getResource(path
 						+ "LoseScreen.png"));
 
-				Game.numbers = ImageIO.read(new File(path + "Numbers.png"));
+				Game.numbers = ImageIO.read(this.getClass().getResource(path + "Numbers.png"));
 
 				Game.imgLoaded = true;
 			} catch (IOException e) {
