@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -98,6 +99,13 @@ public class Game extends JComponent implements Runnable{
 					if (i == 3)
 						ind = i;
 					String app = "" + ind + ".png";
+					URL load = Game.class.getResource(path + playerPath + w
+							+ app);
+					
+					//System.out.println(load);
+					
+					//player.up[i] = ImageIO.read(load);
+					
 					playerUp[i] = ImageIO.read(new File(path + playerPath + w
 							+ app));
 					playerDown[i] = ImageIO.read(new File(path + playerPath + s
