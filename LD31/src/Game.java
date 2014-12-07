@@ -34,6 +34,8 @@ public class Game extends JComponent implements Runnable{
 	int tileX, tileY;
 	int dcooldown;
 	
+	int blizzardTimer;
+	
 	boolean paused;
 	double blizIndex;
 	
@@ -55,6 +57,8 @@ public class Game extends JComponent implements Runnable{
 		this.endGame = false;
 		this.blizIndex = 0;
 		
+		this.blizzardTimer = 1000;
+		
 		this.startTime = 0;
 		this.endTime = 0;
 		
@@ -75,6 +79,7 @@ public class Game extends JComponent implements Runnable{
 			BufferedImage[] snowball = new BufferedImage[1];
 			BufferedImage[] tileImg = new BufferedImage[2];
 			BufferedImage[] snowfall = new BufferedImage[4];
+			BufferedImage[] bars = new BufferedImage[4];
 			try {
 				String path = "res/LD31/";
 				String playerPath = "Player/Player_";
@@ -144,6 +149,11 @@ public class Game extends JComponent implements Runnable{
 
 				snowball[0] = ImageIO.read(new File(path
 						+ "Entity/Snowball.png"));
+				
+				bars[0] = ImageIO.read(new File(path + "SnowBar.png"));
+				bars[1] = ImageIO.read(new File(path + "XPBar.png"));
+				bars[2] = ImageIO.read(new File(path + "HPBar.png"));
+				bars[3] = ImageIO.read(new File(path + "HPBarBig.png"));
 
 				sprites.put("playerUp", playerUp);
 				sprites.put("playerDown", playerDown);
@@ -164,21 +174,27 @@ public class Game extends JComponent implements Runnable{
 				sprites.put("tile", tileImg);
 
 				sprites.put("blizzard", snowfall);
+				sprites.put("bars", bars);
 
-				this.pauseOverlay = ImageIO.read(new File(path
+				Game.pauseOverlay = ImageIO.read(new File(path
 						+ "PauseScreen.png"));
-				this.winOverlay = ImageIO
+				Game.winOverlay = ImageIO
 						.read(new File(path + "WinScreen.png"));
-				this.loseOverlay = ImageIO.read(new File(path
+				Game.loseOverlay = ImageIO.read(new File(path
 						+ "LoseScreen.png"));
 
-				this.numbers = ImageIO.read(new File(path + "Numbers.png"));
+				Game.numbers = ImageIO.read(new File(path + "Numbers.png"));
 
 				Game.imgLoaded = true;
 			} catch (IOException e) {
 				System.out.println("Failed to load sprites!");
 			}
 		}
+		//Sound loading
+		if(!SoundUtil.loaded) {
+			SoundUtil.setup();
+		}
+		
 		this.board = new Tile[x][y];
 		this.x = x;
 		this.y = y;
@@ -224,13 +240,16 @@ public class Game extends JComponent implements Runnable{
 		this.blizzard = true;
 		this.paused = true;
 		Thread t = new Thread(this);
+		
 		this.startTime = System.currentTimeMillis();
 		
 		t.start();
+		
 	}
 	
 	@Override
 	public void run() {
+		SoundUtil.playMusic("LD31_Sno-Man.wav");
 		while(this.running) {
 			if (!paused && !endGame) {
 				this.tick();
@@ -247,17 +266,23 @@ public class Game extends JComponent implements Runnable{
 	}
 	
 	public void tick() {
-		this.blizzard = blizzard?(Math.random()<0.999):(Math.random()<0.0002);	
 		if(blizzard) {
+			this.blizzardTimer--;
+			if(this.blizzardTimer <= 0)
+				this.blizzard = false;
 			//DONE: Blizzard particles.
 			for(int i = 0; i < board.length; i++) {
 				for(int j = 0; j < board[i].length; j++) {
 					board[i][j].fill(1);
 				}
-			}
-			
+			}		
 		} else {
+			double rand = Math.random();
 			
+			if(rand < 1.0/3200.0) {
+				this.blizzard = true;
+				this.blizzardTimer = (int) (600 * 3200 * rand);
+			}
 		}
 		
 		this.snowCooldown--;
@@ -287,6 +312,7 @@ public class Game extends JComponent implements Runnable{
 		
 		if(dcooldown > 400) {
 			dcooldown = 0;
+			this.blizzard = true;
 		}
 		
 		for(Entity m : entities) {

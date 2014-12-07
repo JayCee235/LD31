@@ -46,6 +46,7 @@ public class Turret extends Building{
 					TurretBullet b = new TurretBullet(this.x + this.width/2 - 4, this.y + this.height / 2 - 4, 8, 8,
 							Color.black, (Enemy) e, game);
 					game.add(b);
+					SoundUtil.playSound("snowballShot");
 					this.cooldown = 100;
 				}
 			}

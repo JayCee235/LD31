@@ -51,21 +51,28 @@ public class Building extends Entity{
 
 	public void die() {
 		game.remove(this);
+		SoundUtil.playSound("buildingDestroyed");
 	}
 	
 	public void displayHealth(Graphics g) {
 		int sc = Main.SCALE;
 		
+		int x = (this.x - 1);
+		int y = (this.y - 3);
+		
+		int w = (this.width + 2);
+		int h = 2;
+		
 		double frac = ((double) this.snowCount) / ((double) this.cap);
-		Rectangle2D.Double hpBar = new Rectangle2D.Double((this.x - 1) * sc, (this.y - 3) * sc, 
-				(this.width + 1) * sc, 2 * sc);
-		Rectangle2D.Double fill = new Rectangle2D.Double((this.x - 1) * sc, (this.y - 3) * sc,
-				(this.width + 1) * sc * frac, 2 * sc);
+		
+		Rectangle2D.Double fill = new Rectangle2D.Double(x * sc, 
+				y * sc, w * sc * frac, h * sc);
+		BufferedImage img = (this instanceof Wall)?Game.sprites.get("bars")[3]:Game.sprites.get("bars")[2];
+		
 		Graphics2D g2 = (Graphics2D) g;
-		g2.setColor(Color.black);
-		g2.fill(hpBar);
 		g2.setColor(Color.green);
 		g2.fill(fill);
+		g2.drawImage(img, (x)*sc, (y)*sc, (x+w)*sc, (y+h)*sc, 0, 0, img.getWidth(), img.getHeight(), null);
 	}
 	
 	@Override

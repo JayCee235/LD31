@@ -9,7 +9,7 @@ public class Main {
 	public static final int WIDTH = HEIGHT * 4 / 3;
 	public static final int SCALE = 3;
 	
-	public static final String TITLE = "Ludum Dare 31";
+	public static final String TITLE = "Sno-Man";
 	private static JFrame frame;
 	
 	private static Game game;

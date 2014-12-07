@@ -6,6 +6,8 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
+import java.awt.image.RescaleOp;
 
 
 public class Player extends Mob implements KeyListener{
@@ -15,6 +17,7 @@ public class Player extends Mob implements KeyListener{
 	
 	int switchCooldown;
 	int fadeTime;
+	int stepTime;
 	
 	int goal;
 	
@@ -25,6 +28,7 @@ public class Player extends Mob implements KeyListener{
 	public Player(int x, int y, int w, int h, Color color, Game game) {
 		super(x, y, w, h, color);
 		this.moveSpeed = 1.75;
+		this.stepTime = 30;
 		
 		this.goal = 15000;
 		
@@ -65,7 +69,7 @@ public class Player extends Mob implements KeyListener{
 			
 		}
 		if(code == KeyEvent.VK_SPACE) {
-			game.lose();
+			SoundUtil.playSound("bite");
 		}
 		if(code == KeyEvent.VK_R) {
 			if(game.endGame) {
@@ -145,6 +149,7 @@ public class Player extends Mob implements KeyListener{
 					break;
 				default:
 				}
+				SoundUtil.playSound("buildingPlaced");
 			} else {
 				
 			}
@@ -170,7 +175,12 @@ public class Player extends Mob implements KeyListener{
 				}
 			}
 		}
-		
+		if(this.moving)
+			this.stepTime--;
+		if(this.stepTime <= 0) {
+			this.stepTime = 30;
+			SoundUtil.playSound("step");
+		}
 		
 		
 		super.tick();
@@ -210,34 +220,56 @@ public class Player extends Mob implements KeyListener{
 	public void displaySnow(Graphics g) {
 		int sc = Main.SCALE;
 		double frac = ((double) this.snowCount) / goal;
+		int w = 250 * sc;
+		int h = 16 * sc;
+		int x = (Main.WIDTH / 2 - 125) * sc;
+		int y = 10*sc;
 		
-		Rectangle2D.Double full = new Rectangle2D.Double((Main.WIDTH / 2 - 125) * sc, 10*sc, 250*sc, 16*sc);
-		Rectangle2D.Double part = new Rectangle2D.Double((Main.WIDTH / 2 - 125) * sc, 10*sc, 250*sc * frac, 16*sc);
+		
+		Rectangle2D.Double full = new Rectangle2D.Double(x, y, w, h);
+		Rectangle2D.Double part = new Rectangle2D.Double(x, y, w * frac, h);
 		
 		Graphics2D g2 = (Graphics2D) g;
 		
-		float alpha = this.y < 50?0.3f: 1.0f;
+		float alpha = this.y < y/sc + h/sc + 20?0.3f: 1.0f;
 		
-		g2.setColor(new Color(0.0f, 0.0f, 0.0f, alpha));
-		g2.fill(full);
-		g2.setColor(new Color(0.0f, 0.5f, 1.0f, alpha));
+		//TODO: finish loading and displaying snow bar. Similar for cooldown and HP.
+		float[] scale = {alpha, alpha, alpha, alpha};
+		float[] offs = new float[4];
+		RescaleOp op = new RescaleOp(scale, offs, null);
+		BufferedImage skin = Game.sprites.get("bars")[0];
+		BufferedImage dr = op.filter(skin, null);
+		g2.setColor(new Color(1.0f, 1.0f, 1.0f, alpha));
 		g2.fill(part);
+		g2.drawImage(dr, x-4*sc, y-4*sc, x + w+4*sc, y + h+4*sc, 
+				0, 0, dr.getWidth(), dr.getHeight(), null);
+		
 	}
 	
 	public void displayCooldown(Graphics g) {
 		int sc = Main.SCALE;
 		double frac = ((double) this.turretCooldown) / 200.0;
+		int x = (Main.WIDTH / 2 - 100) * sc;
+		int y = 37*sc;
+		int w = 200*sc;
+		int h = 4*sc;
 		
-		Rectangle2D.Double full = new Rectangle2D.Double((Main.WIDTH / 2 - 125) * sc, 28*sc, 250*sc, 4*sc);
-		Rectangle2D.Double part = new Rectangle2D.Double((Main.WIDTH / 2 - 125) * sc, 28*sc, 250*sc * frac, 4*sc);
+		Rectangle2D.Double full = new Rectangle2D.Double(x, y, w, h);
+		Rectangle2D.Double part = new Rectangle2D.Double(x, y, w * frac, h);
 		
 		Graphics2D g2 = (Graphics2D) g;
 		
-		float alpha = this.y < 60?0.3f: 1.0f;
+		float alpha = this.y < y/sc + h/sc + 20?0.3f: 1.0f;
 		
-		g2.setColor(new Color(0.0f, 0.0f, 0.0f, alpha));
-		g2.fill(full);
-		g2.setColor(new Color(1.0f, 0.0f, 0.9f, alpha));
+		//TODO: finish loading and displaying snow bar. Similar for cooldown and HP.
+		float[] scale = {alpha, alpha, alpha, alpha};
+		float[] offs = new float[4];
+		RescaleOp op = new RescaleOp(scale, offs, null);
+		BufferedImage skin = Game.sprites.get("bars")[1];
+		BufferedImage dr = op.filter(skin, null);
+		g2.setColor(new Color(1.0f, 1.0f, 1.0f, alpha));
 		g2.fill(part);
+		g2.drawImage(dr, x-4*sc, y-4*sc, x + w+4*sc, y + h+4*sc, 
+				0, 0, dr.getWidth(), dr.getHeight(), null);
 	}
 }

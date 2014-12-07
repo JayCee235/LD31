@@ -2,6 +2,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 
@@ -73,7 +74,7 @@ public class Enemy extends Mob{
 	
 	@Override
 	public void tick() {
-		if(this.hp < 0) {
+		if(this.hp <= 0) {
 			this.die();
 		}
 		
@@ -131,8 +132,7 @@ public class Enemy extends Mob{
 				if (poten!=null) {
 					this.target = poten;
 				} else {
-					this.die();
-					return;
+					this.target = game.player;
 				}
 			}
 			if(this.distanceFrom(game.player) < 100) {
@@ -208,7 +208,8 @@ public class Enemy extends Mob{
 				if(this.hunterMode) {
 					this.hunterMode = false;
 					game.player.snowCount -= 30;
-					this.cooldown = 100;
+					this.cooldown = 200;
+					SoundUtil.playSound("bite");
 				}
 			} else {
 				game.player.snowCount--;
@@ -225,16 +226,23 @@ public class Enemy extends Mob{
 	public void displayHealth(Graphics g) {
 		int sc = Main.SCALE;
 		
+		int x = (this.x - 1);
+		int y = (this.y - 3);
+		
+		int w = (this.width + 2);
+		int h = 2;
+		
 		double frac = ((double) this.hp) / ((double) this.hpMax);
-		Rectangle2D.Double hpBar = new Rectangle2D.Double((this.x - 1) * sc, (this.y - 3) * sc, 
-				(this.width + 1) * sc, 2 * sc);
-		Rectangle2D.Double fill = new Rectangle2D.Double((this.x - 1) * sc, 
-				(this.y - 3) * sc, (this.width + 1) * sc * frac, 2 * sc);
+		
+		Rectangle2D.Double fill = new Rectangle2D.Double(x * sc, 
+				y * sc, w * sc * frac, h * sc);
+		BufferedImage img = Game.sprites.get("bars")[2];
+		
+		
 		Graphics2D g2 = (Graphics2D) g;
-		g2.setColor(Color.black);
-		g2.fill(hpBar);
 		g2.setColor(color.red);
 		g2.fill(fill);
+		g2.drawImage(img, (x)*sc, (y)*sc, (x+w)*sc, (y+h)*sc, 0, 0, img.getWidth(), img.getHeight(), null);
 	}
 	
 	@Override
