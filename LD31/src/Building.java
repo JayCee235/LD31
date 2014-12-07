@@ -100,8 +100,10 @@ public class Building extends Entity{
 		RescaleOp op = new RescaleOp(scale, offs, null);
 		BufferedImage img = this.sprite[(int) this.spriteIndex];
 		if(img != null) {
-
-			g2.drawImage(img, op, this.width/2, this.height/2);
+			BufferedImage draww = op.filter(img, null);
+			g2.drawImage(draww, 0, 0, this.width*sc, this.height*sc, 0, 0, img.getWidth(), img.getHeight(), null);
+			
+			//g2.drawImage(img, op, this.width/2, this.height/2);
 			//g2.drawImage(img, 0, 0, this.width*sc, this.height*sc, 0, 0, img.getWidth(), img.getHeight(), null);
 		}
 		

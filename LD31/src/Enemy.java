@@ -18,7 +18,7 @@ public class Enemy extends Mob{
 
 	public Enemy(int x, int y, int w, int h, Color color, Game game) {
 		super(x, y, w, h, color);
-		this.moveSpeed = 2;
+		this.moveSpeed = 1;
 		this.game = game;
 		
 		this.loadSprites();
@@ -88,7 +88,7 @@ public class Enemy extends Mob{
 			}
 			
 			if(this.hunterMode) {
-				this.moveSpeed = 4;
+				this.moveSpeed = 2.25;
 				ddx = game.player.x - this.x;
 				ddy = game.player.y - this.y;
 				if (ddx != 0 || ddy != 0) {
@@ -143,8 +143,8 @@ public class Enemy extends Mob{
 					ddx = this.target.x - this.x;
 					ddy = this.target.y - this.y;
 				} else {
-					ddx = 0;
-					ddy = 0;
+					ddx = this.target.x - this.x;
+					ddy = this.target.y - this.y;
 				}
 				
 			}

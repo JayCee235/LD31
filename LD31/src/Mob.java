@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class Mob extends Entity {
 	boolean moving;
-	int moveSpeed;
+	double moveSpeed;
 	double dx, dy;
 	
 	boolean frozen;
@@ -43,11 +43,12 @@ public class Mob extends Entity {
 	public void move(double dx, double dy) {
 		this.moving = true;
 		
+		
 		if(dx != 0)
-			this.dx = (this.moveSpeed * dx);
+			this.dx += (this.moveSpeed * dx);
 		
 		if(dy != 0)
-			this.dy = (this.moveSpeed * dy);
+			this.dy += (this.moveSpeed * dy);
 	}
 	
 	public void stop() {
@@ -62,18 +63,58 @@ public class Mob extends Entity {
 		
 		if (!frozen) {
 			if (this.moving) {
-				if(dx*dx > dy*dy) {
+				if(dx*dx >= dy*dy) {
 					this.sprite = dx > 0?this.right:this.left;
 				} else {
 					this.sprite = dy > 0?this.down:this.up;
 				}
+				//TODO: stuff
 				
-				double ddx = dx==0?0:(dx>0? Math.ceil(dx):Math.floor(dx));
-				double ddy = dy==0?0:(dy>0? Math.ceil(dy):Math.floor(dy));
+				while (dx >= 1 && dy <= -1) {
+					this.x ++;
+					this.y --;
+					dx--;
+					dy++;
+				}
+				while (dx <= -1 && dy >= 1) {
+					this.x --;
+					this.y ++;
+					dx++;
+					dy--;
+				}
 				
-				this.x += ddx;
-				this.y += ddy;
-
+				while (dx >= 1 && dy >= 1) {
+					this.x ++;
+					this.y ++;
+					dx--;
+					dy--;
+				}
+				while (dx >= 1) {
+					this.x ++;
+					dx--;
+				}
+				while (dy >= 1) {
+					this.y ++;
+					dy--;
+				}
+				
+				
+				while (dx <= -1 && dy <= -1) {
+					this.x --;
+					this.y --;
+					dx++;
+					dy++;
+				}
+				while (dx <= -1) {
+					this.x --;
+					dx++;
+				}
+				while (dy <= -1) {
+					this.y --;
+					dy++;
+				}
+				
+				
 				if (this.x < 0)
 					this.x = 0;
 				if (this.y < 0)

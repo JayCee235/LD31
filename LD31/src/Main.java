@@ -10,10 +10,14 @@ public class Main {
 	public static final int SCALE = 3;
 	
 	public static final String TITLE = "Ludum Dare 31";
+	private static JFrame frame;
+	
+	private static Game game;
+	private static Player player;
 	
 	
 	public static void main(String[] args) {
-		JFrame frame = new JFrame(TITLE);
+		frame = new JFrame(TITLE);
 		frame.setSize(WIDTH * SCALE, HEIGHT * SCALE);
 		
 		Player player = new Player(WIDTH/2 + 8, HEIGHT/2 + 8, 16, 16, Color.blue, null);
@@ -22,13 +26,17 @@ public class Main {
 		player.game = game;
 		player.loadSprites();
 		
-	//	frame.setSize(new Dimension(WIDTH, HEIGHT));
-		frame.setMinimumSize(new Dimension(WIDTH*SCALE, HEIGHT*SCALE));
+		game.setMinimumSize(new Dimension(WIDTH*SCALE, HEIGHT*SCALE));
+		game.setMaximumSize(new Dimension(WIDTH*SCALE, HEIGHT*SCALE));
+		game.setPreferredSize(new Dimension(WIDTH*SCALE, HEIGHT*SCALE));
 		
 		frame.add(game);
 		frame.addKeyListener(player);
 		
-		//frame.setResizable(false);
+		Main.game = game;
+		Main.player = player;
+		
+		frame.setResizable(false);
 		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.pack();
@@ -36,5 +44,34 @@ public class Main {
 		frame.setVisible(true);
 		
 		game.start();
+	}
+	
+	public static void restart() {
+		frame.setSize(WIDTH * SCALE, HEIGHT * SCALE);
+		
+		Player player = new Player(WIDTH/2 + 8, HEIGHT/2 + 8, 16, 16, Color.blue, null);
+		Game newGame = new Game(40, 30, player);
+		
+		player.game = newGame;
+		player.loadSprites();
+		
+		newGame.setMinimumSize(new Dimension(Main.WIDTH*Main.SCALE, Main.HEIGHT*Main.SCALE));
+		newGame.setMaximumSize(new Dimension(Main.WIDTH*Main.SCALE, Main.HEIGHT*Main.SCALE));
+		newGame.setPreferredSize(new Dimension(Main.WIDTH*Main.SCALE, Main.HEIGHT*Main.SCALE));
+		
+		frame.remove(Main.game);
+		frame.removeKeyListener(Main.player);
+		
+		frame.add(newGame);
+		frame.addKeyListener(player);
+		
+		Main.game = newGame;
+		Main.player = player;
+		
+		frame.setLocationRelativeTo(null);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.pack();
+		
+		newGame.start();
 	}
 }

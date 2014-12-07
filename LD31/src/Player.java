@@ -24,7 +24,7 @@ public class Player extends Mob implements KeyListener{
 
 	public Player(int x, int y, int w, int h, Color color, Game game) {
 		super(x, y, w, h, color);
-		this.moveSpeed = 3;
+		this.moveSpeed = 1.75;
 		
 		this.goal = 15000;
 		
@@ -65,7 +65,12 @@ public class Player extends Mob implements KeyListener{
 			
 		}
 		if(code == KeyEvent.VK_SPACE) {
-			System.out.println(game.dcooldown);
+			game.lose();
+		}
+		if(code == KeyEvent.VK_R) {
+			if(game.endGame) {
+				game.restart();
+			}
 		}
 	}
 
@@ -90,23 +95,29 @@ public class Player extends Mob implements KeyListener{
 			game.win();
 		}
 		
+		int moveSpeedFix = game.blizzard?1:0;
+		
+		if(game.blizzard) {
+			this.snowCount++;
+		}
+		
 		this.stop();
 		
 		if(keysDown[KeyEvent.VK_W]) {
 			this.moving = true;
-			this.dy = -moveSpeed;
+			this.dy = -moveSpeed-moveSpeedFix;
 		}
 		if(keysDown[KeyEvent.VK_S]) {
 			this.moving = true;
-			this.dy = moveSpeed;
+			this.dy = moveSpeed+moveSpeedFix;
 		}
 		if(keysDown[KeyEvent.VK_A]) {
 			this.moving = true;
-			this.dx = -moveSpeed;
+			this.dx = -moveSpeed-moveSpeedFix;
 		}
 		if(keysDown[KeyEvent.VK_D]) {
 			this.moving = true;
-			this.dx = moveSpeed;
+			this.dx = moveSpeed+moveSpeedFix;
 		}
 		if(keysDown[KeyEvent.VK_C]) {
 			if (this.turretCooldown <= 0 && this.snowCount > 100) {
@@ -169,17 +180,20 @@ public class Player extends Mob implements KeyListener{
 	public void draw(Graphics g) {
 		super.draw(g);
 		if(this.fadeTime > 0) {
+			int sc = Main.SCALE;
+			sc = 1;
+			
 			switch(this.buildType) {
 			case 0:
-				Turret draw = new Turret(this.x, this.y - 20, 16, 16, Color.green, game);
+				Turret draw = new Turret(this.x*sc, (this.y - 20) * sc, 16 * sc, 16 * sc, Color.green, game);
 				draw.fade(g, fadeTime / 25.0f);
 				break;
 			case 1:
-				SnowWell draww = new SnowWell(this.x, this.y - 20, 16, 16, Color.blue, game);
+				SnowWell draww = new SnowWell(this.x*sc, (this.y - 20)*sc, 16*sc, 16*sc, Color.blue, game);
 				draww.fade(g, fadeTime / 25.0f);
 				break;
 			case 2:
-				Wall drawww = new Wall(this.x - 8, this.y - 36, 32, 32, Color.yellow, game);
+				Wall drawww = new Wall((this.x - 8)*sc, (this.y - 36)*sc, 32*sc, 32*sc, Color.yellow, game);
 				drawww.fade(g, fadeTime / 25.0f);
 				break;
 			default:
@@ -188,6 +202,8 @@ public class Player extends Mob implements KeyListener{
 		
 		this.displaySnow(g);
 		this.displayCooldown(g);
+		
+		
 		
 	}
 	
