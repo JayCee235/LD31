@@ -257,6 +257,7 @@ public class Game extends JComponent implements Runnable{
 			if (!paused && !endGame) {
 				this.tick();
 			}
+			
 			this.repaint();
 			
 			try {
@@ -345,6 +346,10 @@ public class Game extends JComponent implements Runnable{
 	
 	@Override
 	public void paintComponent(Graphics g) {
+		if(Main.appletMode) {
+			super.paintComponent(g);
+		}
+		
 		g.setColor(this.background);
 		((Graphics2D) g).fillRect(0, 0, Main.WIDTH * Main.SCALE, Main.HEIGHT * Main.SCALE);
 		for(int i = 0; i < x; i++) {

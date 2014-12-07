@@ -92,11 +92,11 @@ public class SoundUtil {
 		if(clip.isRunning()) {
 			clip.stop();
 		}
-		if(music!=null && music.isRunning() && musicName!=name) {
-			music.stop();
-		}
 		
 		clip.loop(Clip.LOOP_CONTINUOUSLY);
+		if (music!=null) {
+			music.stop();
+		}
 		music = clip;
 		musicName = name;
 		clip.setFramePosition(0);
