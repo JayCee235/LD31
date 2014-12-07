@@ -68,9 +68,6 @@ public class Player extends Mob implements KeyListener{
 			}
 			
 		}
-		if(code == KeyEvent.VK_SPACE) {
-			SoundUtil.playSound("bite");
-		}
 		if(code == KeyEvent.VK_R) {
 			if(game.endGame) {
 				game.restart();
