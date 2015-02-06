@@ -44,10 +44,10 @@ public class Player extends Mob implements KeyListener{
 	}
 	
 	public void loadSprites() {
-		this.up = Game.sprites.get("playerUp");
-		this.down = Game.sprites.get("playerDown");
-		this.left = Game.sprites.get("playerLeft");
-		this.right = Game.sprites.get("playerRight");
+		this.up = game.sprites.getSprite("playerUp");
+		this.down = game.sprites.getSprite("playerDown");
+		this.left = game.sprites.getSprite("playerLeft");
+		this.right = game.sprites.getSprite("playerRight");
 		
 		this.sprite = this.down;
 	}
@@ -235,7 +235,7 @@ public class Player extends Mob implements KeyListener{
 		float[] scale = {alpha, alpha, alpha, alpha};
 		float[] offs = new float[4];
 		RescaleOp op = new RescaleOp(scale, offs, null);
-		BufferedImage skin = Game.sprites.get("bars")[0];
+		BufferedImage skin = game.sprites.getSprite("bars")[0];
 		BufferedImage dr = op.filter(skin, null);
 		g2.setColor(new Color(1.0f, 1.0f, 1.0f, alpha));
 		g2.fill(part);
@@ -263,7 +263,7 @@ public class Player extends Mob implements KeyListener{
 		float[] scale = {alpha, alpha, alpha, alpha};
 		float[] offs = new float[4];
 		RescaleOp op = new RescaleOp(scale, offs, null);
-		BufferedImage skin = Game.sprites.get("bars")[1];
+		BufferedImage skin = game.sprites.getSprite("bars")[1];
 		BufferedImage dr = op.filter(skin, null);
 		g2.setColor(new Color(1.0f, 1.0f, 1.0f, alpha));
 		g2.fill(part);

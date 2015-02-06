@@ -9,7 +9,7 @@ public class Turret extends Building{
 		super(x, y, w, h, color, game);
 		
 		this.cooldown = 0;
-		this.sprite = Game.sprites.get("turret");
+		this.sprite = game.sprites.getSprite("turret");
 		
 	}
 	

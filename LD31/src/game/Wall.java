@@ -10,7 +10,7 @@ public class Wall extends Building{
 		this.snowCount = 1000;
 		this.cap = 1000;
 		
-		this.sprite = Game.sprites.get("wall");
+		this.sprite = game.sprites.getSprite("wall");
 		
 	}
 	

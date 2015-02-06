@@ -14,14 +14,19 @@ public class Tile {
 	
 	int snowCount;
 	
-	public Tile(int x, int y, Color color) {
+	public Tile(int x, int y, Color color, SpriteLibrary sprites) {
 		this.x = x;
 		this.y = y;
 		
 		this.color = Color.white;
 		
 		this.snow = true;
-		this.sprite = Game.sprites.get("tile");
+		this.sprite = sprites.getSprite("tile");
+		//TODO:
+		if(this.sprite == null) {
+			System.err.println("Tile missing sprite");
+			System.exit(-1);
+		}
 		
 		this.snowCount = 10;
 	}

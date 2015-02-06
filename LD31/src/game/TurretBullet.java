@@ -18,7 +18,7 @@ public class TurretBullet extends Mob{
 		
 		this.game = game;
 		
-		this.sprite = Game.sprites.get("snowball");
+		this.sprite = game.sprites.getSprite("snowball");
 		this.spriteIndex = 0;
 		
 		this.up = sprite;

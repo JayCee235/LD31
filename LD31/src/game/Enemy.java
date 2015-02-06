@@ -67,10 +67,10 @@ public class Enemy extends Mob{
 	}
 	
 	public void loadSprites() {
-		this.up = Game.sprites.get("enemyUp");
-		this.down = Game.sprites.get("enemyDown");
-		this.left = Game.sprites.get("enemyLeft");
-		this.right = Game.sprites.get("enemyRight");
+		this.up = game.sprites.getSprite("enemyUp");
+		this.down = game.sprites.getSprite("enemyDown");
+		this.left = game.sprites.getSprite("enemyLeft");
+		this.right = game.sprites.getSprite("enemyRight");
 	}
 	
 	@Override
@@ -237,7 +237,7 @@ public class Enemy extends Mob{
 		
 		Rectangle2D.Double fill = new Rectangle2D.Double(x * sc, 
 				y * sc, w * sc * frac, h * sc);
-		BufferedImage img = Game.sprites.get("bars")[2];
+		BufferedImage img = game.sprites.getSprite("bars")[2];
 		
 		
 		Graphics2D g2 = (Graphics2D) g;

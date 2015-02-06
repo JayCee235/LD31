@@ -17,7 +17,7 @@ public class Snowpile extends Entity{
 		this.player = game.player;
 		this.game = game;
 		
-		this.sprite = Game.sprites.get("snowPile");
+		this.sprite = game.sprites.getSprite("snowPile");
 		this.spriteIndex = 0;
 	}
 

@@ -21,7 +21,8 @@ public class Game extends JComponent implements Runnable{
 	long startTime;
 	long endTime;
 	
-	public static HashMap<String, BufferedImage[]> sprites = new HashMap<String, BufferedImage[]>();
+//	public static HashMap<String, BufferedImage[]> sprites = new HashMap<String, BufferedImage[]>();
+	public SpriteLibrary sprites = new SpriteLibrary();
 	public static boolean imgLoaded = false;
 	
 	private static BufferedImage pauseOverlay, winOverlay, loseOverlay;
@@ -54,7 +55,7 @@ public class Game extends JComponent implements Runnable{
 	int snowCooldown;
 	private boolean win;
 	
-	public Game(int x, int y, Player player) {
+	public Game(int x, int y, Player player, SpriteLibrary library) {
 		this.win = false;
 		this.endGame = false;
 		this.blizIndex = 0;
@@ -64,24 +65,24 @@ public class Game extends JComponent implements Runnable{
 		this.startTime = 0;
 		this.endTime = 0;
 		
-		if (!Game.imgLoaded) {
+		if (library==null) {
 			//Sprite loading
-			BufferedImage[] playerUp = new BufferedImage[4];
-			BufferedImage[] playerDown = new BufferedImage[4];
-			BufferedImage[] playerLeft = new BufferedImage[4];
-			BufferedImage[] playerRight = new BufferedImage[4];
-			BufferedImage[] enemyUp = new BufferedImage[4];
-			BufferedImage[] enemyDown = new BufferedImage[4];
-			BufferedImage[] enemyLeft = new BufferedImage[4];
-			BufferedImage[] enemyRight = new BufferedImage[4];
-			BufferedImage[] snowImg = new BufferedImage[3];
-			BufferedImage[] wellImg = new BufferedImage[3];
-			BufferedImage[] wallImg = new BufferedImage[1];
-			BufferedImage[] turretImg = new BufferedImage[1];
-			BufferedImage[] snowball = new BufferedImage[1];
-			BufferedImage[] tileImg = new BufferedImage[2];
-			BufferedImage[] snowfall = new BufferedImage[4];
-			BufferedImage[] bars = new BufferedImage[4];
+//			BufferedImage[] playerUp = new BufferedImage[4];
+//			BufferedImage[] playerDown = new BufferedImage[4];
+//			BufferedImage[] playerLeft = new BufferedImage[4];
+//			BufferedImage[] playerRight = new BufferedImage[4];
+//			BufferedImage[] enemyUp = new BufferedImage[4];
+//			BufferedImage[] enemyDown = new BufferedImage[4];
+//			BufferedImage[] enemyLeft = new BufferedImage[4];
+//			BufferedImage[] enemyRight = new BufferedImage[4];
+//			BufferedImage[] snowImg = new BufferedImage[3];
+//			BufferedImage[] wellImg = new BufferedImage[3];
+//			BufferedImage[] wallImg = new BufferedImage[1];
+//			BufferedImage[] turretImg = new BufferedImage[1];
+//			BufferedImage[] snowball = new BufferedImage[1];
+//			BufferedImage[] tileImg = new BufferedImage[2];
+//			BufferedImage[] snowfall = new BufferedImage[4];
+//			BufferedImage[] bars = new BufferedImage[4];
 			try {
 				String path = "res/LD31/";
 				String playerPath = "Player/Player_";
@@ -91,93 +92,130 @@ public class Game extends JComponent implements Runnable{
 				String a = "Left";
 				String s = "Down";
 				String d = "Right";
+				
+				String[] order = new String[]{"1","2","1","3"};
+				System.out.println("Loading Sprites...");
+				
+				
+				sprites.addSprite("playerUp", path+playerPath+w, order, ".png");
+				sprites.addSprite("playerDown", path+playerPath+s, order, ".png");
+				sprites.addSprite("playerLeft", path+playerPath+a, order, ".png");
+				sprites.addSprite("playerRight", path+playerPath+d, order, ".png");
+				
+				sprites.addSprite("enemyUp", path+enemyPath+w, order, ".png");
+				sprites.addSprite("enemyDown", path+enemyPath+s, order, ".png");
+				sprites.addSprite("enemyLeft", path+enemyPath+a, order, ".png");
+				sprites.addSprite("enemyRight", path+enemyPath+d, order, ".png");
 
-				for (int i = 0; i < 4; i++) {
-					int ind = 1;
-					if (i == 1)
-						ind++;
-					if (i == 3)
-						ind = i;
-					String app = "" + ind + ".png";
-					
-					playerUp[i] = ImageIO.read(this.getClass().getResource(path + playerPath + w
-							+ app));
-					playerDown[i] = ImageIO.read(this.getClass().getResource(path + playerPath + s
-							+ app));
-					playerLeft[i] = ImageIO.read(this.getClass().getResource(path + playerPath + a
-							+ app));
-					playerRight[i] = ImageIO.read(this.getClass().getResource(path + playerPath
-							+ d + app));
-
-					enemyUp[i] = ImageIO.read(this.getClass().getResource(path + enemyPath + w
-							+ app));
-					enemyDown[i] = ImageIO.read(this.getClass().getResource(path + enemyPath + s
-							+ app));
-					enemyLeft[i] = ImageIO.read(this.getClass().getResource(path + enemyPath + a
-							+ app));
-					enemyRight[i] = ImageIO.read(this.getClass().getResource(path + enemyPath + d
-							+ app));
-
-				}
+//				for (int i = 0; i < 4; i++) {
+//					int ind = 1;
+//					if (i == 1)
+//						ind++;
+//					if (i == 3)
+//						ind = i;
+//					String app = "" + ind + ".png";
+//					
+//					playerUp[i] = ImageIO.read(this.getClass().getResource(path + playerPath + w
+//							+ app));
+//					playerDown[i] = ImageIO.read(this.getClass().getResource(path + playerPath + s
+//							+ app));
+//					playerLeft[i] = ImageIO.read(this.getClass().getResource(path + playerPath + a
+//							+ app));
+//					playerRight[i] = ImageIO.read(this.getClass().getResource(path + playerPath
+//							+ d + app));
+//
+//					enemyUp[i] = ImageIO.read(this.getClass().getResource(path + enemyPath + w
+//							+ app));
+//					enemyDown[i] = ImageIO.read(this.getClass().getResource(path + enemyPath + s
+//							+ app));
+//					enemyLeft[i] = ImageIO.read(this.getClass().getResource(path + enemyPath + a
+//							+ app));
+//					enemyRight[i] = ImageIO.read(this.getClass().getResource(path + enemyPath + d
+//							+ app));
+//
+//				}
+				
+				
+				
 				String snowPath = "Entity/SnowPile";
 				String wallPath = "Entity/Wall";
 				String wellPath = "Entity/Well";
 				String turretPath = "Entity/Turret";
 
 				String app = ".png";
-
-				for (int i = 0; i < 3; i++) {
-					snowImg[i] = ImageIO.read(this.getClass().getResource(path + snowPath
-							+ (i + 1) + app));
-				}
-				for (int i = 0; i < 3; i++) {
-					wellImg[i] = ImageIO.read(this.getClass().getResource(path + wellPath
-							+ (i + 1) + app));
-				}
-				for (int i = 0; i < 1; i++) {
-					wallImg[i] = ImageIO.read(this.getClass().getResource(path + wallPath + app));
-				}
-				for (int i = 0; i < 1; i++) {
-					turretImg[i] = ImageIO.read(this.getClass().getResource(path + turretPath
-							+ app));
-				}
-
-				for (int i = 0; i < 4; i++) {
-					snowfall[i] = ImageIO.read(this.getClass().getResource(path + "Tile/Snow"
-							+ (i + 1) + ".png"));
-				}
-
-				tileImg[0] = ImageIO.read(this.getClass().getResource(path + "Tile/Snow.png"));
-				tileImg[1] = ImageIO.read(this.getClass().getResource(path + "Tile/Burn.png"));
-
-				snowball[0] = ImageIO.read(this.getClass().getResource(path
-						+ "Entity/Snowball.png"));
 				
-				bars[0] = ImageIO.read(this.getClass().getResource(path + "SnowBar.png"));
-				bars[1] = ImageIO.read(this.getClass().getResource(path + "XPBar.png"));
-				bars[2] = ImageIO.read(this.getClass().getResource(path + "HPBar.png"));
-				bars[3] = ImageIO.read(this.getClass().getResource(path + "HPBarBig.png"));
+				sprites.addSprite("snowPile", path+snowPath, new String[]{"1","2","3"}, app);
+				sprites.addImage("wall", path+wallPath + app);
+				sprites.addSprite("well", path+wellPath, new String[]{"1","2","3"}, app);
+				sprites.addImage("turret", path+turretPath+app);
+				sprites.addSprite("blizzard", path+"Tile/Snow", new String[]{"1","2","3","4"}, app);
+				
+				sprites.addSprite("tile", path+"Tile/", new String[]{"Snow", "Burn"}, app);
+				sprites.addImage("snowball", path + "Entity/Snowball.png");
+				
+				String[] bars = new String[]{"SnowBar", "XPBar", "HPBar", "HPBarBig"};
+				sprites.addSprite("bars", path, bars, app);
+				
+//				bars[0] = ImageIO.read(this.getClass().getResource(path + "SnowBar.png"));
+//				bars[1] = ImageIO.read(this.getClass().getResource(path + "XPBar.png"));
+//				bars[2] = ImageIO.read(this.getClass().getResource(path + "HPBar.png"));
+//				bars[3] = ImageIO.read(this.getClass().getResource(path + "HPBarBig.png"));
+				
+//				tileImg[0] = ImageIO.read(this.getClass().getResource(path + "Tile/Snow.png"));
+//				tileImg[1] = ImageIO.read(this.getClass().getResource(path + "Tile/Burn.png"));
 
-				sprites.put("playerUp", playerUp);
-				sprites.put("playerDown", playerDown);
-				sprites.put("playerLeft", playerLeft);
-				sprites.put("playerRight", playerRight);
+//				for (int i = 0; i < 3; i++) {
+//					snowImg[i] = ImageIO.read(this.getClass().getResource(path + snowPath
+//							+ (i + 1) + app));
+//				}
+//				for (int i = 0; i < 3; i++) {
+//					wellImg[i] = ImageIO.read(this.getClass().getResource(path + wellPath
+//							+ (i + 1) + app));
+//				}
+//				for (int i = 0; i < 1; i++) {
+//					wallImg[i] = ImageIO.read(this.getClass().getResource(path + wallPath + app));
+//				}
+//				for (int i = 0; i < 1; i++) {
+//					turretImg[i] = ImageIO.read(this.getClass().getResource(path + turretPath
+//							+ app));
+//				}
+//
+//				for (int i = 0; i < 4; i++) {
+//					snowfall[i] = ImageIO.read(this.getClass().getResource(path + "Tile/Snow"
+//							+ (i + 1) + ".png"));
+//				}
 
-				sprites.put("enemyUp", enemyUp);
-				sprites.put("enemyDown", enemyDown);
-				sprites.put("enemyLeft", enemyLeft);
-				sprites.put("enemyRight", enemyRight);
+//				tileImg[0] = ImageIO.read(this.getClass().getResource(path + "Tile/Snow.png"));
+//				tileImg[1] = ImageIO.read(this.getClass().getResource(path + "Tile/Burn.png"));
+//
+//				snowball[0] = ImageIO.read(this.getClass().getResource(path
+//						+ "Entity/Snowball.png"));
+//				
+//				bars[0] = ImageIO.read(this.getClass().getResource(path + "SnowBar.png"));
+//				bars[1] = ImageIO.read(this.getClass().getResource(path + "XPBar.png"));
+//				bars[2] = ImageIO.read(this.getClass().getResource(path + "HPBar.png"));
+//				bars[3] = ImageIO.read(this.getClass().getResource(path + "HPBarBig.png"));
 
-				sprites.put("snowPile", snowImg);
-				sprites.put("wall", wallImg);
-				sprites.put("well", wellImg);
-				sprites.put("turret", turretImg);
-				sprites.put("snowball", snowball);
+//				sprites.put("playerUp", playerUp);
+//				sprites.put("playerDown", playerDown);
+//				sprites.put("playerLeft", playerLeft);
+//				sprites.put("playerRight", playerRight);
+//
+//				sprites.put("enemyUp", enemyUp);
+//				sprites.put("enemyDown", enemyDown);
+//				sprites.put("enemyLeft", enemyLeft);
+//				sprites.put("enemyRight", enemyRight);
 
-				sprites.put("tile", tileImg);
-
-				sprites.put("blizzard", snowfall);
-				sprites.put("bars", bars);
+//				sprites.put("snowPile", snowImg);
+//				sprites.put("wall", wallImg);
+//				sprites.put("well", wellImg);
+//				sprites.put("turret", turretImg);
+//				sprites.put("snowball", snowball);
+//
+//				sprites.put("tile", tileImg);
+//
+//				sprites.put("blizzard", snowfall);
+//				sprites.put("bars", bars);
 
 				Game.pauseOverlay = ImageIO.read(this.getClass().getResource(path
 						+ "PauseScreen.png"));
@@ -190,8 +228,11 @@ public class Game extends JComponent implements Runnable{
 
 				Game.imgLoaded = true;
 			} catch (IOException e) {
-				System.out.println("Failed to load sprites!");
+				String plus = e.getMessage();
+				System.out.println("Failed to load sprites!\nDetals: " + plus==null?"null":plus);
 			}
+		} else {
+			this.sprites = library;
 		}
 		//Sound loading
 		if(!SoundUtil.loaded) {
@@ -231,7 +272,7 @@ public class Game extends JComponent implements Runnable{
 		
 		for(int i = 0; i < x; i++) {
 			for(int j = 0; j < y; j++) {
-				board[i][j] = new Tile(i, j, Color.white.darker());
+				board[i][j] = new Tile(i, j, Color.white.darker(), sprites);
 			}
 		}
 		
@@ -385,7 +426,7 @@ public class Game extends JComponent implements Runnable{
 			int sc = Main.SCALE;
 			for(int i = 0; i < Main.WIDTH / 8 + 1; i++) {
 				for(int j = 0; j < Main.HEIGHT / 8 + 1; j++) {
-					g.drawImage(sprites.get("blizzard")[(int) blizIndex], 8*i*sc, 8*j*sc, 8*sc, 8*sc, null);
+					g.drawImage(sprites.getSprite("blizzard")[(int) blizIndex], 8*i*sc, 8*j*sc, 8*sc, 8*sc, null);
 				}
 			}
 			blizIndex += 0.1;
@@ -478,6 +519,10 @@ public class Game extends JComponent implements Runnable{
 	
 	public void stop() {
 		this.running = false;
+	}
+	
+	public SpriteLibrary getLibrary() {
+		return this.sprites;
 	}
 
 }

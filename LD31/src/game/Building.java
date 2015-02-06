@@ -68,7 +68,8 @@ public class Building extends Entity{
 		
 		Rectangle2D.Double fill = new Rectangle2D.Double(x * sc, 
 				y * sc, w * sc * frac, h * sc);
-		BufferedImage img = (this instanceof Wall)?Game.sprites.get("bars")[3]:Game.sprites.get("bars")[2];
+		BufferedImage img = (this instanceof Wall)?game.sprites.getSprite("bars")[3]
+				:game.sprites.getSprite("bars")[2];
 		
 		Graphics2D g2 = (Graphics2D) g;
 		g2.setColor(Color.green);

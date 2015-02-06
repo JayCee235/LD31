@@ -9,7 +9,7 @@ public class SnowWell extends Building{
 		this.snowCount = 500;
 		this.cap = 1000;
 		
-		this.sprite = Game.sprites.get("well");
+		this.sprite = game.sprites.getSprite("well");
 		this.spriteIndex = 0;
 	}
 	
