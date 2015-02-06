@@ -23,6 +23,8 @@ public class Game extends JComponent implements Runnable{
 	
 //	public static HashMap<String, BufferedImage[]> sprites = new HashMap<String, BufferedImage[]>();
 	public SpriteLibrary sprites = new SpriteLibrary();
+	public SpriteLibrary font;
+	
 	public static boolean imgLoaded = false;
 	
 	private static BufferedImage pauseOverlay, winOverlay, loseOverlay;
@@ -94,8 +96,6 @@ public class Game extends JComponent implements Runnable{
 				String d = "Right";
 				
 				String[] order = new String[]{"1","2","1","3"};
-				System.out.println("Loading Sprites...");
-				
 				
 				sprites.addSprite("playerUp", path+playerPath+w, order, ".png");
 				sprites.addSprite("playerDown", path+playerPath+s, order, ".png");
@@ -134,8 +134,6 @@ public class Game extends JComponent implements Runnable{
 //							+ app));
 //
 //				}
-				
-				
 				
 				String snowPath = "Entity/SnowPile";
 				String wallPath = "Entity/Wall";
@@ -225,11 +223,18 @@ public class Game extends JComponent implements Runnable{
 						+ "LoseScreen.png"));
 
 				Game.numbers = ImageIO.read(this.getClass().getResource(path + "Numbers.png"));
+				String letter = "A B C D E F G H I J K L M N O P Q R S T U V W X Y Z . ! ? : 1 2 3 4 5 6 7 8 9 0";
+				String[] letters = letter.split(" ");;
+				this.font = new SpriteLibrary("", letters, path+"Font.png", 8, 8, 1, 1);
 
 				Game.imgLoaded = true;
+				
+				
+				
 			} catch (IOException e) {
 				String plus = e.getMessage();
-				System.out.println("Failed to load sprites!\nDetals: " + plus==null?"null":plus);
+				System.out.println("Failed to load sprites!\nDetals: " +
+				plus==null?"Unknown exception":plus);
 			}
 		} else {
 			this.sprites = library;
@@ -477,6 +482,22 @@ public class Game extends JComponent implements Runnable{
 			
 			
 		}
+		
+		if(font==null) {
+			System.err.println("font is null");
+			System.exit(-1);
+		}
+		if(font.getSprite("W")==null) {
+			System.err.println("W is null");
+			System.exit(-1);
+		}
+		if(font.getSprite("W")[0]==null) {
+			System.err.println("W[0] is null");
+			System.exit(-1);
+		}
+		
+//		g.drawImage(font.getSprite("W")[0], 10, 10, null);
+		
 	}
 	
 	public void lose() {
