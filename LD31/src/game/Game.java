@@ -216,16 +216,16 @@ public class Game extends JComponent implements Runnable{
 //				sprites.put("bars", bars);
 
 				Game.pauseOverlay = ImageIO.read(this.getClass().getResource(path
-						+ "PauseScreen.png"));
+						+ "PauseScreenBackground.png"));
 				Game.winOverlay = ImageIO
-						.read(this.getClass().getResource(path + "WinScreen.png"));
+						.read(this.getClass().getResource(path + "WinScreenBackground.png"));
 				Game.loseOverlay = ImageIO.read(this.getClass().getResource(path
-						+ "LoseScreen.png"));
+						+ "LoseScreenBackground.png"));
 
 				Game.numbers = ImageIO.read(this.getClass().getResource(path + "Numbers.png"));
 				String letter = "A B C D E F G H I J K L M N O P Q R S T U V W X Y Z . ! ? : 1 2 3 4 5 6 7 8 9 0";
 				String[] letters = letter.split(" ");;
-				this.font = new SpriteLibrary("", letters, path+"Font.png", 8, 8, 1, 1);
+				this.font = new SpriteLibrary("", letters, path+"ScaledFont.png", 7, 7, 1, 1);
 
 				Game.imgLoaded = true;
 				
@@ -445,59 +445,49 @@ public class Game extends JComponent implements Runnable{
 			int sc = Main.SCALE;
 			g.drawImage(pauseOverlay, 0, 0, Main.WIDTH * sc, Main.HEIGHT * sc, 
 					0, 0, pauseOverlay.getWidth(), pauseOverlay.getHeight(), null);
+			this.drawString(g, "PAUSED", 8, 8);
+			
+			this.drawString(g, "WASD to move", 8, 48);
+			this.drawString(g, "C to build", 8, 56);
+			this.drawString(g, "X to change buildings", 8, 64);
+			this.drawString(g, "P to pause:unpause", 8, 80);
 		}
 		
 		if(endGame) {
 			int sc = Main.SCALE;
-			g.drawImage(win?winOverlay:loseOverlay, 0, 0, Main.WIDTH * sc, Main.HEIGHT * sc, 
-					0, 0, pauseOverlay.getWidth(), pauseOverlay.getHeight(), null);
-			//TODO;
-			
 			long time = (endTime - startTime) / 1000;
 			int t = (int) time;
 			
 			String draw = Integer.toString(t);
-			
-			for (int index = 0; index < draw.length(); index++) {
-				int x = 0;
-				int y = 0;
-				int d = draw.charAt(index) - 48;
+			if(win) {
+				g.drawImage(winOverlay, 0, 0, Main.WIDTH*sc, Main.HEIGHT*sc, 0, 0, 
+						winOverlay.getWidth(), winOverlay.getHeight(), null);
+				this.drawString(g, "You win!", 8, 8);
 				
-				if(d==0) {
-					x = 4 * 8;
-					y = 2 * 8;
-				} else {
-					x = 8*((d-1) % 5);
-					y = 8*((d-1) / 5);
-				}
-				
-				int startx = sc * (1 + 9*index);
-				int starty = sc * (1 + 9 * 3);
-				
-				int endx = startx + sc*8;
-				int endy = starty + sc*8;
-				
-				g.drawImage(numbers, startx, starty, endx, endy, x, y, x + 8, y + 8, null);
+			} else {
+				g.drawImage(loseOverlay, 0, 0, Main.WIDTH*sc, Main.HEIGHT*sc, 0, 0, 
+						loseOverlay.getWidth(), loseOverlay.getHeight(), null);
+				this.drawString(g, "You lose!", 8, 8);
 			}
+			this.drawString(g, "Time: " + draw, 8, 16);
 			
-			
 		}
 		
-		if(font==null) {
-			System.err.println("font is null");
-			System.exit(-1);
-		}
-		if(font.getSprite("W")==null) {
-			System.err.println("W is null");
-			System.exit(-1);
-		}
-		if(font.getSprite("W")[0]==null) {
-			System.err.println("W[0] is null");
-			System.exit(-1);
-		}
+//		g.drawImage(font.getSprite("?")[0], 0, 0, 8*Main.SCALE, 8*Main.SCALE, null);
+//		this.drawString(g, "TEST", 1, 1);
 		
-//		g.drawImage(font.getSprite("W")[0], 10, 10, null);
-		
+	}
+	
+	public void drawString(Graphics g, String s, int startX, int startY) {
+		char[] c = s.toCharArray();
+		for(int i = 0; i < c.length; i++) { 
+			char cUp = Character.toUpperCase(c[i]);
+			String cc = ""+cUp;
+			if(cc.equals(" ")) continue;
+			g.drawImage(font.getSprite(cc)[0], 
+					Main.SCALE*startX + 8*i*Main.SCALE, Main.SCALE*startY, 
+					7*Main.SCALE, 7*Main.SCALE, null);
+		}
 	}
 	
 	public void lose() {

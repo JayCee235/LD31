@@ -40,20 +40,19 @@ public class SpriteLibrary {
 		this.library = new HashMap<String, BufferedImage[]>();
 		BufferedImage img = null;
 		try {
-			img = ImageIO.read(new File(imgPath));
+			img = ImageIO.read(this.getClass().getResource(imgPath));
 		} catch(IOException e) {
 			throw new IOException("File not found! " + imgPath);
 		}
 		
-		int x = img.getWidth() / dx;
-		int y = img.getHeight() / dy;
+		int x = (img.getWidth()+offsetX) / (dx+offsetX);
+		int y = (img.getHeight()+offsetY) / (dy+offsetY);
 		
 		for(int i = 0; i < x; i++) {
 			for(int j = 0; j < y; j++) {
 				BufferedImage[] add = new BufferedImage[]{
 						img.getSubimage(i*(dx+offsetX), j*(dy+offsetY), dx, dy)};
-				System.out.println(names[i*x+j]);
-				this.library.put(nameRoot + names[i*x+j], add);
+				this.library.put(nameRoot + names[j*x+i], add);
 			}
 		}
 		
