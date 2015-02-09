@@ -22,7 +22,7 @@ public class App extends JApplet{
 		
 		Player player = new Player(WIDTH / 2 + 8, HEIGHT / 2 + 8, 16, 16,
 				Color.blue, null);
-		game = new Game(40, 30, player, null);
+		game = new Game(40, 30, player, null, null);
 		player.game = game;
 		player.loadSprites();
 		game.setMinimumSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
@@ -49,7 +49,8 @@ public class App extends JApplet{
 		
 		Player player = new Player(WIDTH / 2 + 8, HEIGHT / 2 + 8, 16, 16,
 				Color.blue, null);
-		game = new Game(40, 30, player, game==null?null:game.getLibrary());
+		game = new Game(40, 30, player, game==null?null:game.getLibrary(), 
+				game==null?null:game.font);
 		player.game = game;
 		player.loadSprites();
 		game.setMinimumSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));

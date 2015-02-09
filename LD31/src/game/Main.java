@@ -28,7 +28,7 @@ public class Main extends Applet{
 			frame.setSize(WIDTH * SCALE, HEIGHT * SCALE);
 			Player player = new Player(WIDTH / 2 + 8, HEIGHT / 2 + 8, 16, 16,
 					Color.blue, null);
-			Game game = new Game(40, 30, player, null);
+			Game game = new Game(40, 30, player, null, null);
 			player.game = game;
 			player.loadSprites();
 			game.setMinimumSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
@@ -56,7 +56,8 @@ public class Main extends Applet{
 			frame.setSize(WIDTH * SCALE, HEIGHT * SCALE);
 			Player player = new Player(WIDTH / 2 + 8, HEIGHT / 2 + 8, 16, 16,
 					Color.blue, null);
-			Game newGame = new Game(40, 30, player, game==null?null:game.getLibrary());
+			Game newGame = new Game(40, 30, player, game==null?null:game.getLibrary(),
+					game==null?null:game.font);
 			player.game = newGame;
 			player.loadSprites();
 			newGame.setMinimumSize(new Dimension(Main.WIDTH * Main.SCALE,
