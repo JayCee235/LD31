@@ -25,6 +25,7 @@ public class Player extends Mob implements KeyListener{
 	Game game;
 	
 	int buildType;
+	long lastPause;
 
 	public Player(int x, int y, int w, int h, Color color, Game game) {
 		super(x, y, w, h, color);
@@ -39,6 +40,8 @@ public class Player extends Mob implements KeyListener{
 		
 		this.turretCooldown = 0;
 		this.buildType = 0;
+		
+		this.lastPause = System.currentTimeMillis();
 		
 		this.game = game;
 	}
@@ -58,8 +61,15 @@ public class Player extends Mob implements KeyListener{
 		if(code>=0 && code<keysDown.length) {
 			keysDown[code] = true;
 		}
+		if(code == KeyEvent.VK_EQUALS) game.debugMode = !game.debugMode;
 		if(code == KeyEvent.VK_P) {
 			game.pause();
+//			if(game.paused) {
+//				this.lastPause = System.currentTimeMillis();
+//			} else {
+//				long timeReturn = System.currentTimeMillis() - this.lastPause;
+//				game.pauseTimeTotal += timeReturn;
+//			}
 		}
 		if(code == KeyEvent.VK_X) {
 			if (this.switchCooldown <= 0) {

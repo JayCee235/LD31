@@ -19,8 +19,12 @@ public class Game extends JComponent implements Runnable{
 	public static final int HEIGHT = Main.WIDTH;
 	public static final int WIDTH = Main.HEIGHT;
 	
-	long startTime;
-	long endTime;
+//	long startTime;
+//	long endTime;
+//	long pauseTimeTotal;
+	long timePlayed;
+	long lastTick;
+	
 	
 //	public static HashMap<String, BufferedImage[]> sprites = new HashMap<String, BufferedImage[]>();
 	public SpriteLibrary sprites = new SpriteLibrary();
@@ -33,6 +37,7 @@ public class Game extends JComponent implements Runnable{
 	private static BufferedImage numbers; 
 	
 	boolean endGame;
+	boolean debugMode;
 	
 	Tile[][] board;
 	int x, y;
@@ -61,12 +66,15 @@ public class Game extends JComponent implements Runnable{
 	public Game(int x, int y, Player player, SpriteLibrary library, SpriteLibrary font) {
 		this.win = false;
 		this.endGame = false;
+		this.debugMode = false;
 		this.blizIndex = 0;
 		
 		this.blizzardTimer = 1000;
 		
-		this.startTime = 0;
-		this.endTime = 0;
+		timePlayed = 0;
+		lastTick = System.currentTimeMillis();
+//		this.startTime = 0;
+//		this.endTime = 0;
 		
 		if (library==null) {
 			//Sprite loading
@@ -188,7 +196,7 @@ public class Game extends JComponent implements Runnable{
 		this.paused = true;
 		Thread t = new Thread(this);
 		
-		this.startTime = System.currentTimeMillis();
+//		this.startTime = System.currentTimeMillis();
 		
 		t.start();
 		
@@ -201,6 +209,12 @@ public class Game extends JComponent implements Runnable{
 			if (!paused && !endGame) {
 				this.tick();
 			}
+			long newTime = System.currentTimeMillis();
+			if(!this.paused) {
+				long diff = newTime - this.lastTick;
+				this.timePlayed += diff;
+			}
+			this.lastTick = newTime;
 			
 			this.repaint();
 			
@@ -214,6 +228,7 @@ public class Game extends JComponent implements Runnable{
 	}
 	
 	public void tick() {
+		
 		if(blizzard) {
 			this.blizzardTimer--;
 			if(this.blizzardTimer <= 0)
@@ -353,7 +368,7 @@ public class Game extends JComponent implements Runnable{
 		
 		if(endGame) {
 			int sc = Main.SCALE;
-			long time = (endTime - startTime) / 1000;
+			long time = timePlayed / 1000;
 			int t = (int) time;
 			
 			String draw = Integer.toString(t);
@@ -373,7 +388,10 @@ public class Game extends JComponent implements Runnable{
 		
 //		g.drawImage(font.getSprite("?")[0], 0, 0, 8*Main.SCALE, 8*Main.SCALE, null);
 //		this.drawString(g, "TEST", 1, 1);
-		
+		if(debugMode) {
+			int diff = (int) (timePlayed)/1000;
+			this.drawString(g, "time: " + diff, 8, 200);
+		}
 	}
 	
 	public void drawString(Graphics g, String s, int startX, int startY) {
@@ -390,7 +408,7 @@ public class Game extends JComponent implements Runnable{
 	
 	public void lose() {
 		this.paused = true;
-		this.endTime = System.currentTimeMillis();
+//		this.endTime = System.currentTimeMillis();
 		this.win = false;
 		this.endGame = true;
 	}
@@ -416,7 +434,7 @@ public class Game extends JComponent implements Runnable{
 
 	public void win() {
 		this.paused = true;
-		this.endTime = System.currentTimeMillis();
+//		this.endTime = System.currentTimeMillis();
 		this.win = true;
 		this.endGame = true;
 	}
