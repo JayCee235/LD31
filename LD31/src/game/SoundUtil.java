@@ -14,7 +14,11 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.Mixer;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-
+/**
+ * Static class to handle sounds.
+ * @author JayCee235
+ *
+ */
 public class SoundUtil {
 	private static Mixer mixer;
 	public static HashMap<String, URL> clips = new HashMap<String, URL>();
@@ -25,29 +29,45 @@ public class SoundUtil {
 	public static Clip music;
 	public static String musicName;
 	
+	/**
+	 * Name of all sounds in the game so far. The file is found at 'res/LD31/Sound/[name]'.
+	 */
+	public static final String[] SOUNDS = {"bite","enemyDeath","snowballShot","step", 
+		"buildingPlaced", "buildingDestroyed", "LD31_Sno-Man.wav"};
+	
 	public static void setup() {
 		musicName = "";
 		loaded = true;
 		Mixer.Info[] mixInfos = AudioSystem.getMixerInfo();
 		mixer = AudioSystem.getMixer(mixInfos[0]);
-		String[] load = {"bite","enemyDeath","snowballShot","step", 
-				"buildingPlaced", "buildingDestroyed", "LD31_Sno-Man.wav"};
 		
-		for(String s : load) {
-			SoundUtil.loadSound(s, s);
+		for(String s : SOUNDS) {
+			SoundUtil.loadSound("res/LD31/Sound/"+s, s);
 		}
 		
 		
 	}
 	
+	/**
+	 * Loads the sound from path, and puts it in the table under the key name.
+	 * @param name
+	 * Key to put the sound under.
+	 * @param path
+	 * URL path to follow.
+	 */
 	private static void loadSound(String name, String path) {
-		String prePath = "res/LD31/Sound/";
-		URL file = SoundUtil.class.getResource(prePath + path);
+//		String prePath = "res/LD31/Sound/";
+		URL file = SoundUtil.class.getResource(path);
 		
 		clips.put(name, file);
 		
 	}
 	
+	/**
+	 * Plays the specified sound once.
+	 * @param name
+	 * name of the clip to play.
+	 */
 	public static void playSound(String name) {
 		DataLine.Info dataInf = new DataLine.Info(Clip.class, null);
 		
@@ -63,6 +83,8 @@ public class SoundUtil {
 			return;
 		} catch (LineUnavailableException e) {
 			return;
+		} catch (NullPointerException e) {
+			return;
 		}
 		
 		if(clip.isRunning()) {
@@ -72,6 +94,11 @@ public class SoundUtil {
 		clip.start();
 	}
 	
+	/**
+	 * Plays the given music. If music is currently playing, stops that music first.
+	 * @param name
+	 * Name of sound to play as music.
+	 */
 	public static void playMusic(String name) {
 		DataLine.Info dataInf = new DataLine.Info(Clip.class, null);
 		

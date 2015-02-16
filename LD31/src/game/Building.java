@@ -6,7 +6,11 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.RescaleOp;
 
-
+/**
+ * Parent class of all buildings. 
+ * @author JayCee235
+ *
+ */
 public class Building extends Entity{
 	Game game;
 	int snowCount, cap;
@@ -43,7 +47,7 @@ public class Building extends Entity{
 			this.snowCount = this.cap;
 		}
 		
-		
+		//TODO: If better lists are implemented, pull the enemy list here.
 		for (Entity e : game.entities) {
 				if (e instanceof Enemy) {
 					if (this.collidingWith(e)) {
@@ -55,11 +59,18 @@ public class Building extends Entity{
 			}
 		}
 
+	/**
+	 * Removes the building from the game.
+	 */
 	public void die() {
 		game.remove(this);
 		SoundUtil.playSound("buildingDestroyed");
 	}
 	
+	/**
+	 * Displays the health of the building. Called in draw() method.
+	 * @param g
+	 */
 	public void displayHealth(Graphics g) {
 		int sc = Main.SCALE;
 		
@@ -116,9 +127,6 @@ public class Building extends Entity{
 		if(img != null) {
 			BufferedImage draww = op.filter(img, null);
 			g2.drawImage(draww, 0, 0, this.width*sc, this.height*sc, 0, 0, img.getWidth(), img.getHeight(), null);
-			
-			//g2.drawImage(img, op, this.width/2, this.height/2);
-			//g2.drawImage(img, 0, 0, this.width*sc, this.height*sc, 0, 0, img.getWidth(), img.getHeight(), null);
 		}
 		
 		g2.translate(-this.x*sc, -this.y*sc);

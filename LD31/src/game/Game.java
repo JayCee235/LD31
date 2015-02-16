@@ -14,27 +14,28 @@ import java.util.LinkedList;
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 
-
+/**
+ * Handles most game logic, besides key listening implemented in Player.
+ * @author JayCee235
+ *
+ */
 public class Game extends JComponent implements Runnable{
 	public static final int HEIGHT = Main.WIDTH;
 	public static final int WIDTH = Main.HEIGHT;
 	
-//	long startTime;
-//	long endTime;
-//	long pauseTimeTotal;
 	long timePlayed;
 	long lastTick;
 	
-	
-//	public static HashMap<String, BufferedImage[]> sprites = new HashMap<String, BufferedImage[]>();
 	public SpriteLibrary sprites = new SpriteLibrary();
 	public SpriteLibrary font;
 	
+	/**
+	 * True if images have already been loaded. If true, restart will pass the current Game's library 
+	 * to the new game.
+	 */
 	public static boolean imgLoaded = false;
 	
 	private static BufferedImage pauseOverlay, winOverlay, loseOverlay;
-	
-	private static BufferedImage numbers; 
 	
 	boolean endGame;
 	boolean debugMode;
@@ -73,12 +74,9 @@ public class Game extends JComponent implements Runnable{
 		
 		timePlayed = 0;
 		lastTick = System.currentTimeMillis();
-//		this.startTime = 0;
-//		this.endTime = 0;
 		
 		if (library==null) {
 			//Sprite loading
-
 			try {
 				String path = "res/LD31/";
 				String playerPath = "Player/Player_";
@@ -127,7 +125,6 @@ public class Game extends JComponent implements Runnable{
 				Game.loseOverlay = ImageIO.read(this.getClass().getResource(path
 						+ "LoseScreenBackground.png"));
 
-				Game.numbers = ImageIO.read(this.getClass().getResource(path + "Numbers.png"));
 				String letter = "A B C D E F G H I J K L M N O P Q R S T U V W X Y Z . ! ? : 1 2 3 4 5 6 7 8 9 0";
 				String[] letters = letter.split(" ");;
 				this.font = new SpriteLibrary("", letters, path+"ScaledFont.png", 7, 7, 1, 1);
@@ -150,6 +147,7 @@ public class Game extends JComponent implements Runnable{
 			SoundUtil.setup();
 		}
 		
+		//Sets up a new board.
 		this.board = new Tile[x][y];
 		this.x = x;
 		this.y = y;
@@ -160,6 +158,12 @@ public class Game extends JComponent implements Runnable{
 		
 		this.background = Color.green.darker();
 		
+		/* TODO: Possibly store entities in a way that specific kinds can be accessed quicker for looping.
+		 * Possibly an array, where index 0 is the player, 1 is enemies, etc.
+		 * This makes Building's loops looking for enemies or buildings faster.
+		 */
+		
+		//Sets up new lists for entities.
 		this.toRemove = new LinkedList<Entity>();
 		this.toAdd = new LinkedList<Entity>();
 		this.entities = new LinkedList<Entity>();
@@ -172,6 +176,7 @@ public class Game extends JComponent implements Runnable{
 		this.snowCooldown = 0;
 		this.dcooldown = 0;
 		
+		//Spawns 10 random snow piles.
 		for(int i = 0; i < 10; i++) {
 			int xr = (int) ((Main.WIDTH-16) * Math.random());
 			int yr = (int) ((Main.HEIGHT-16) * Math.random());
@@ -181,6 +186,7 @@ public class Game extends JComponent implements Runnable{
 			entities.add(s);
 		}
 		
+		//Fills the board with new snow tiles.
 		for(int i = 0; i < x; i++) {
 			for(int j = 0; j < y; j++) {
 				board[i][j] = new Tile(i, j, Color.white.darker(), sprites);
@@ -190,13 +196,14 @@ public class Game extends JComponent implements Runnable{
 		
 	}
 	
+	/**
+	 * Starts the game.
+	 */
 	public void start() {
 		this.running = true;
 		this.blizzard = true;
 		this.paused = true;
 		Thread t = new Thread(this);
-		
-//		this.startTime = System.currentTimeMillis();
 		
 		t.start();
 		
@@ -227,13 +234,15 @@ public class Game extends JComponent implements Runnable{
 		return;
 	}
 	
+	/**
+	 * tick for the game. All logic is handled here.
+	 */
 	public void tick() {
-		
+		//Takes care of blizzards
 		if(blizzard) {
 			this.blizzardTimer--;
 			if(this.blizzardTimer <= 0)
 				this.blizzard = false;
-			//DONE: Blizzard particles.
 			for(int i = 0; i < board.length; i++) {
 				for(int j = 0; j < board[i].length; j++) {
 					board[i][j].fill(1);
@@ -244,10 +253,12 @@ public class Game extends JComponent implements Runnable{
 			
 			if(rand < 1.0/3200.0) {
 				this.blizzard = true;
+				//TODO: Look at this number. Tweak it a bit to get good random blizzards.
 				this.blizzardTimer = (int) (600 * 3200 * rand);
 			}
 		}
 		
+		//Spawns snow on a cooldown.
 		this.snowCooldown--;
 		if(this.snowCooldown < 0 && this.blizzard) {
 			entities.add(new Snowpile(Game.randInt(Main.WIDTH-16), Game.randInt(Main.HEIGHT-16), 
@@ -260,6 +271,7 @@ public class Game extends JComponent implements Runnable{
 			dcooldown += 25;
 		}
 		
+		//Spawns enemies on a cooldown.
 		this.enemyCooldown--;
 		if(this.enemyCooldown < 0 && !this.blizzard) {
 			entities.add(new Enemy(Game.randInt(Main.WIDTH-16), Game.randInt(Main.HEIGHT-16), 
@@ -273,8 +285,10 @@ public class Game extends JComponent implements Runnable{
 			dcooldown += 25;
 		}
 		
+		//'Break' blizzard. 
 		if(dcooldown > 400) {
 			dcooldown = 0;
+			blizzardTimer = 600;
 			this.blizzard = true;
 		}
 		
@@ -282,35 +296,48 @@ public class Game extends JComponent implements Runnable{
 			m.tick();
 		}
 		
+		//Adds all new entities to the game.
 		while(toAdd.size()>0) {
 			Entity m = toAdd.get(0);
 			entities.add(m);
 			toAdd.remove(m);
 		}
 		
+		//Removes all removed entities from the game.
 		while(toRemove.size()>0) {
 			Entity m = toRemove.get(0);
 			entities.remove(m);
 			toRemove.remove(m);
 		}
 	}
-	
+	/**
+	 * Adds the entity to a list to be removed from the game later.
+	 * @param e
+	 */
 	public void remove(Entity e) {
 		toRemove.add(e);
 	}
 	
+	/**
+	 * Adds the entity to a list to be added to a game later.
+	 * @param e
+	 */
 	public void add(Entity e) {
 		toAdd.add(e);
 	}
 	
 	@Override
 	public void paintComponent(Graphics g) {
+		//Applets are weird.
 		if(Main.appletMode) {
 			super.paintComponent(g);
 		}
 		
+		//First the background...
 		g.setColor(this.background);
 		((Graphics2D) g).fillRect(0, 0, Main.WIDTH * Main.SCALE, Main.HEIGHT * Main.SCALE);
+		
+		//...Now the ground...
 		for(int i = 0; i < x; i++) {
 			for(int j = 0; j < y; j++) {
 				if (board[i][j]!=null) {
@@ -319,27 +346,17 @@ public class Game extends JComponent implements Runnable{
 				}
 			}
 		}
+		
+		//..And then everything on top.
 		for(Entity m : entities) {
+			//Player is drawn on the very top.
 			if (m!=this.player) {
 				m.draw(g);
 			}
 		}
 		this.player.draw(g);
 		
-		//Moved to tick()
-		
-//		while(toAdd.size()>0) {
-//			Entity m = toAdd.get(0);
-//			entities.add(m);
-//			toAdd.remove(m);
-//		}
-//		
-//		while(toRemove.size()>0) {
-//			Entity m = toRemove.get(0);
-//			entities.remove(m);
-//			toRemove.remove(m);
-//		}
-		
+		//Draw blizzard particles.
 		if(blizzard) {
 			int sc = Main.SCALE;
 			for(int i = 0; i < Main.WIDTH / 8 + 1; i++) {
@@ -347,13 +364,15 @@ public class Game extends JComponent implements Runnable{
 					g.drawImage(sprites.getSprite("blizzard")[(int) blizIndex], 8*i*sc, 8*j*sc, 8*sc, 8*sc, null);
 				}
 			}
+			//Moves blizzard animation forward, at 0.1 frames/tick.
 			blizIndex += 0.1;
 			if(blizIndex >= 4) {
 				blizIndex = 0;
 			}
 		}
 		
-		//DONE: Pause menu overlay. 
+		//Draws pause screen if paused. 
+		//!endGame because endGame is also paused, and draws a different screen.
 		if(paused && !endGame) {
 			int sc = Main.SCALE;
 			g.drawImage(pauseOverlay, 0, 0, Main.WIDTH * sc, Main.HEIGHT * sc, 
@@ -386,14 +405,24 @@ public class Game extends JComponent implements Runnable{
 			
 		}
 		
-//		g.drawImage(font.getSprite("?")[0], 0, 0, 8*Main.SCALE, 8*Main.SCALE, null);
-//		this.drawString(g, "TEST", 1, 1);
+		//Draws the debugMode screen on top of everything.
 		if(debugMode) {
 			int diff = (int) (timePlayed)/1000;
 			this.drawString(g, "time: " + diff, 8, 200);
 		}
 	}
 	
+	/**
+	 * Draws a string at a specified, un-scaled location.
+	 * @param g
+	 * Graphics to draw on.
+	 * @param s
+	 * String to draw
+	 * @param startX
+	 * x-position to draw string, before scaling.
+	 * @param startY
+	 * y-position to draw string, before scaling.
+	 */
 	public void drawString(Graphics g, String s, int startX, int startY) {
 		char[] c = s.toCharArray();
 		for(int i = 0; i < c.length; i++) { 
@@ -406,21 +435,47 @@ public class Game extends JComponent implements Runnable{
 		}
 	}
 	
+	/**
+	 * Loses the game.
+	 */
 	public void lose() {
 		this.paused = true;
-//		this.endTime = System.currentTimeMillis();
 		this.win = false;
 		this.endGame = true;
 	}
 	
+	/**
+	 * Returns a random integer between 0 and max value, including both 0 and max.
+	 * @param max
+	 * upper bound
+	 * @return
+	 */
 	public static int randInt(int max) {
-		return (int) (Math.random() * max);
+		return (int) (Math.random() * (max+1));
 	}
 	
+	/**
+	 * Pauses or unpauses the game.
+	 */
 	public void pause() {
 		this.paused = !paused;
 	}
 	
+	/**
+	 * Returns the tile at the specified position. Mainly for getting underfoot of entities.
+	 * @param board
+	 * array to pull tiles from
+	 * @param x
+	 * x-position of tile to get. (NOT position in array)
+	 * @param y
+	 * y-position of tile to get. (NOT position in array)
+	 * @param tileSizeX
+	 * Width of tiles.
+	 * @param tileSizeY
+	 * Height of tiles.
+	 * @return
+	 * The tile under the given position.
+	 */
 	public static Tile getAt(Tile[][] board, int x, int y, int tileSizeX, int tileSizeY) {
 		int ix = x / tileSizeX;
 		int iy = y / tileSizeY;
@@ -432,22 +487,34 @@ public class Game extends JComponent implements Runnable{
 		}
 	}
 
+	/**
+	 * Wins the game.
+	 */
 	public void win() {
 		this.paused = true;
-//		this.endTime = System.currentTimeMillis();
 		this.win = true;
 		this.endGame = true;
 	}
 
+	/**
+	 * Restarts the game.
+	 */
 	public void restart() {
 		this.stop();
 		Main.restart();
 	}
 	
+	/**
+	 * Ends the game.
+	 */
 	public void stop() {
 		this.running = false;
 	}
 	
+	/**
+	 * Returns the Game's SpriteLibrary. Used to pass it to a new game during restart.
+	 * @return
+	 */
 	public SpriteLibrary getLibrary() {
 		return this.sprites;
 	}
