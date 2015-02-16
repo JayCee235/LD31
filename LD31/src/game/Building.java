@@ -24,9 +24,14 @@ public class Building extends Entity{
 		this.cap = 100;
 		
 		this.spriteIndex = 0;
+		//TODO: Better entities.
+		//If the building is colliding with another building, it should be destroyed.
 		for(Entity e : game.entities) {
 			if(e instanceof Building && this.collidingWith(e)) {
+				game.player.snowCount += 100;
+				game.player.turretCooldown = 0;
 				this.die();
+				break;
 			}
 		}
 		

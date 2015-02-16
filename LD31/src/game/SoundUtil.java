@@ -42,7 +42,7 @@ public class SoundUtil {
 		mixer = AudioSystem.getMixer(mixInfos[0]);
 		
 		for(String s : SOUNDS) {
-			SoundUtil.loadSound("res/LD31/Sound/"+s, s);
+			SoundUtil.loadSound(s, "res/LD31/Sound/"+s);
 		}
 		
 		

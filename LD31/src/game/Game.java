@@ -231,6 +231,7 @@ public class Game extends JComponent implements Runnable{
 				
 			}
 		}
+		System.gc();
 		return;
 	}
 	

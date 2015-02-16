@@ -10,7 +10,11 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.RescaleOp;
 
-
+/**
+ * The player class. Self explanitory.
+ * @author JayCee235
+ *
+ */
 public class Player extends Mob implements KeyListener{
 	boolean[] keysDown;
 	int snowCount;
@@ -46,6 +50,9 @@ public class Player extends Mob implements KeyListener{
 		this.game = game;
 	}
 	
+	/**
+	 * Gets the proper sprites from game, and sets the player to facing Down.
+	 */
 	public void loadSprites() {
 		this.up = game.sprites.getSprite("playerUp");
 		this.down = game.sprites.getSprite("playerDown");
@@ -57,19 +64,15 @@ public class Player extends Mob implements KeyListener{
 
 	@Override
 	public void keyPressed(KeyEvent key) {
+		//Sets the keyDown to true for that key.
 		int code = key.getKeyCode();
 		if(code>=0 && code<keysDown.length) {
 			keysDown[code] = true;
 		}
+		//Things that should be taken care of as the key is pressed.
 		if(code == KeyEvent.VK_EQUALS) game.debugMode = !game.debugMode;
 		if(code == KeyEvent.VK_P) {
 			game.pause();
-//			if(game.paused) {
-//				this.lastPause = System.currentTimeMillis();
-//			} else {
-//				long timeReturn = System.currentTimeMillis() - this.lastPause;
-//				game.pauseTimeTotal += timeReturn;
-//			}
 		}
 		if(code == KeyEvent.VK_X) {
 			if (this.switchCooldown <= 0) {
@@ -80,7 +83,7 @@ public class Player extends Mob implements KeyListener{
 			
 		}
 		if(code == KeyEvent.VK_R) {
-			if(game.endGame) {
+			if(game.paused) {
 				game.restart();
 			}
 		}
@@ -101,6 +104,7 @@ public class Player extends Mob implements KeyListener{
 	
 	@Override
 	public void tick() {
+		//Win or lose here.
 		if(this.snowCount <= 0) {
 			game.lose();
 		} else if(this.snowCount >= goal) {
@@ -113,8 +117,10 @@ public class Player extends Mob implements KeyListener{
 			this.snowCount++;
 		}
 		
+		//Stop moving.
 		this.stop();
 		
+		//Move.
 		if(keysDown[KeyEvent.VK_W]) {
 			this.moving = true;
 			this.dy = -moveSpeed-moveSpeedFix;
@@ -131,29 +137,31 @@ public class Player extends Mob implements KeyListener{
 			this.moving = true;
 			this.dx = moveSpeed+moveSpeedFix;
 		}
+		
+		//Try to build a building
 		if(keysDown[KeyEvent.VK_C]) {
 			if (this.turretCooldown <= 0 && this.snowCount > 100) {
 				switch (buildType) {
 				case 0:
+					this.turretCooldown = 200;
+					this.snowCount -= 100;
 					Turret t = new Turret(this.x, this.y, 16, 16, Color.green,
 							game);
 					game.add(t);
-					this.turretCooldown = 200;
-					this.snowCount -= 100;
 					break;
 				case 1:
+					this.turretCooldown = 200;
+					this.snowCount -= 100;
 					SnowWell well = new SnowWell(this.x, this.y, 16, 16, Color.blue,
 							game);
 					game.add(well);
-					this.turretCooldown = 200;
-					this.snowCount -= 100;
 					break;
 				case 2:
+					this.turretCooldown = 200;
+					this.snowCount -= 100;
 					Wall wall = new Wall(this.x, this.y, 32, 32, Color.yellow,
 							game);
 					game.add(wall);
-					this.turretCooldown = 200;
-					this.snowCount -= 100;
 					break;
 				default:
 				}
@@ -163,6 +171,8 @@ public class Player extends Mob implements KeyListener{
 			}
 		}
 		
+		
+		//Cooldowns and timers.
 		if(this.turretCooldown > 0) {
 			this.turretCooldown--;
 		}
@@ -175,6 +185,7 @@ public class Player extends Mob implements KeyListener{
 			this.fadeTime--;
 		}
 		
+		//Fills the snow below your feet.
 		for(Tile[] ta : this.getFoot(game.board, game.tileX, game.tileY)) {
 			for(Tile t : ta) {
 				if(t!=null && !t.snow) {
@@ -183,6 +194,8 @@ public class Player extends Mob implements KeyListener{
 				}
 			}
 		}
+		
+		//Plays the step sound.
 		if(this.moving)
 			this.stepTime--;
 		if(this.stepTime <= 0) {
@@ -225,6 +238,10 @@ public class Player extends Mob implements KeyListener{
 		
 	}
 	
+	/**
+	 * Displays the amount of snow collected in a bar at the top of the screen.
+	 * @param g
+	 */
 	public void displaySnow(Graphics g) {
 		int sc = Main.SCALE;
 		double frac = ((double) this.snowCount) / goal;
@@ -241,7 +258,6 @@ public class Player extends Mob implements KeyListener{
 		
 		float alpha = this.y < y/sc + h/sc + 20?0.3f: 1.0f;
 		
-		//TODO: finish loading and displaying snow bar. Similar for cooldown and HP.
 		float[] scale = {alpha, alpha, alpha, alpha};
 		float[] offs = new float[4];
 		RescaleOp op = new RescaleOp(scale, offs, null);
@@ -254,6 +270,10 @@ public class Player extends Mob implements KeyListener{
 		
 	}
 	
+	/**
+	 * Displays the building cooldown.
+	 * @param g
+	 */
 	public void displayCooldown(Graphics g) {
 		int sc = Main.SCALE;
 		double frac = ((double) this.turretCooldown) / 200.0;
@@ -269,7 +289,6 @@ public class Player extends Mob implements KeyListener{
 		
 		float alpha = this.y < y/sc + h/sc + 20?0.3f: 1.0f;
 		
-		//TODO: finish loading and displaying snow bar. Similar for cooldown and HP.
 		float[] scale = {alpha, alpha, alpha, alpha};
 		float[] offs = new float[4];
 		RescaleOp op = new RescaleOp(scale, offs, null);
