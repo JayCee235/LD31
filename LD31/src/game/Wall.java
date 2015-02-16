@@ -14,6 +14,15 @@ public class Wall extends Building{
 		
 	}
 	
+	public Wall(boolean active, int x, int y, int w, int h, Color color, Game game) {
+		super(active, x, y, w, h, color, game);
+
+		this.snowCount = 1000;
+		this.cap = 1000;
+		
+		this.sprite = game.sprites.getSprite("wall");
+	}
+	
 	@Override
 	public void tick() {
 		super.tick();

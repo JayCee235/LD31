@@ -13,6 +13,13 @@ public class Turret extends Building{
 		
 	}
 	
+	public Turret(boolean active, int x, int y, int w, int h, Color color, Game game) {
+		super(active, x, y, w, h, color, game);
+
+		this.cooldown = 0;
+		this.sprite = game.sprites.getSprite("turret");
+	}
+	
 	@Override
 	public void tick() {
 		super.tick();

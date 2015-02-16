@@ -35,7 +35,17 @@ public class Building extends Entity{
 			}
 		}
 		
+	}
+	
+	public Building(boolean active, int x, int y, int w, int h, Color color, Game game) {
+		super(x, y, w, h, color);
 		
+		this.game = game;
+		
+		this.snowCount = 100;
+		this.cap = 100;
+		
+		this.spriteIndex = 0;
 	}
 	
 	@Override

@@ -13,6 +13,15 @@ public class SnowWell extends Building{
 		this.spriteIndex = 0;
 	}
 	
+	public SnowWell(boolean active, int x, int y, int w, int h, Color color, Game game) {
+		super(active, x, y, w, h, color, game);
+		this.snowCount = 500;
+		this.cap = 1000;
+		
+		this.sprite = game.sprites.getSprite("well");
+		this.spriteIndex = 0;
+	}
+	
 	@Override
 	public void tick() {
 		super.tick();

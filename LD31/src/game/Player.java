@@ -216,15 +216,15 @@ public class Player extends Mob implements KeyListener{
 			
 			switch(this.buildType) {
 			case 0:
-				Turret draw = new Turret(this.x*sc, (this.y - 20) * sc, 16 * sc, 16 * sc, Color.green, game);
+				Turret draw = new Turret(false, this.x*sc, (this.y - 20) * sc, 16 * sc, 16 * sc, Color.green, game);
 				draw.fade(g, fadeTime / 25.0f);
 				break;
 			case 1:
-				SnowWell draww = new SnowWell(this.x*sc, (this.y - 20)*sc, 16*sc, 16*sc, Color.blue, game);
+				SnowWell draww = new SnowWell(false, this.x*sc, (this.y - 20)*sc, 16*sc, 16*sc, Color.blue, game);
 				draww.fade(g, fadeTime / 25.0f);
 				break;
 			case 2:
-				Wall drawww = new Wall((this.x - 8)*sc, (this.y - 36)*sc, 32*sc, 32*sc, Color.yellow, game);
+				Wall drawww = new Wall(false, (this.x - 8)*sc, (this.y - 36)*sc, 32*sc, 32*sc, Color.yellow, game);
 				drawww.fade(g, fadeTime / 25.0f);
 				break;
 			default:
