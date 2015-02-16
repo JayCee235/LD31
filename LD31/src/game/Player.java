@@ -139,7 +139,7 @@ public class Player extends Mob implements KeyListener{
 					this.snowCount -= 100;
 					break;
 				case 2:
-					Wall wall = new Wall(this.x-8, this.y-8, 32, 32, Color.yellow,
+					Wall wall = new Wall(this.x, this.y, 32, 32, Color.yellow,
 							game);
 					game.add(wall);
 					this.turretCooldown = 200;

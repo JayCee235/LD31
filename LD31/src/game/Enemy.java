@@ -5,6 +5,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 
 public class Enemy extends Mob{
@@ -35,7 +36,7 @@ public class Enemy extends Mob{
 		switch(behaviour){
 		case siege:
 			this.hp = this.hpMax = 100;
-			ArrayList<Entity> p = game.entities;
+			LinkedList<Entity> p = game.entities;
 			Entity poten = null;
 			int dis = -1;
 			for(Entity t : p) {
@@ -114,7 +115,7 @@ public class Enemy extends Mob{
 			break;
 		case siege:
 			if(!game.entities.contains(this.target)) {
-				ArrayList<Entity> p = game.entities;
+				LinkedList<Entity> p = game.entities;
 				Entity poten = null;
 				int dis = -1;
 				for(Entity t : p) {

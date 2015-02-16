@@ -20,6 +20,11 @@ public class Building extends Entity{
 		this.cap = 100;
 		
 		this.spriteIndex = 0;
+		for(Entity e : game.entities) {
+			if(e instanceof Building && this.collidingWith(e)) {
+				this.die();
+			}
+		}
 		
 		
 	}

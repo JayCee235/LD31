@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
@@ -46,9 +47,9 @@ public class Game extends JComponent implements Runnable{
 	
 	Player player;
 	
-	ArrayList<Entity> entities;
-	ArrayList<Entity> toRemove;
-	ArrayList<Entity> toAdd;
+	LinkedList<Entity> entities;
+	LinkedList<Entity> toRemove;
+	LinkedList<Entity> toAdd;
 	
 	boolean running;
 	boolean blizzard;
@@ -151,9 +152,9 @@ public class Game extends JComponent implements Runnable{
 		
 		this.background = Color.green.darker();
 		
-		this.toRemove = new ArrayList<Entity>();
-		this.toAdd = new ArrayList<Entity>();
-		this.entities = new ArrayList<Entity>();
+		this.toRemove = new LinkedList<Entity>();
+		this.toAdd = new LinkedList<Entity>();
+		this.entities = new LinkedList<Entity>();
 		if (player!=null) {
 			entities.add(player);
 		}

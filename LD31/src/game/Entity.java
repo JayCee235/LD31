@@ -12,8 +12,9 @@ public class Entity {
 	double spriteIndex;
 	
 	public Entity(int x, int y, int w, int h, Color color) {
-		this.x = x;
-		this.y = y;
+		int scale = Main.SCALE*4;
+		this.x = (x/scale)*scale;
+		this.y = (y/scale)*scale;
 		this.width = w;
 		this.height = h;
 		this.color = color;
